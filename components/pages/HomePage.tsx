@@ -23,6 +23,7 @@ import Blog from "../homepage/blog/Blog";
 import Newsletter from "../homepage/newsletter/Newsletter";
 import FAQ from "../homepage/faq/FAQ";
 import InstagramGallery from "../homepage/instagram/InstagramGallery";
+import GetAuthTokenFastApi from "../wesiteDetail/GetAuthTokenFastApi";
 
 // --- Types ---
 interface HomePageProps {
@@ -59,6 +60,7 @@ const HomePage = ({ data }: HomePageProps) => {
 
       {/* get all page from the database */}
       <GetAllPages />
+      <GetAuthTokenFastApi/>
       <UpdateCurrentPage/>
 
       <Hero section={getSection(content, "Hero")} />

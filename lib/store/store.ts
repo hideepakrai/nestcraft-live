@@ -11,6 +11,7 @@ import categoryReducer from "./categories/categoriesSlices";
 import productsReducer from "./products/productsSlices";
 import attributesReducer from "./attributes/attributeSlices";
 import wishlistReducer from "./wishlist/wishlistSlice";
+import websiteDetailReducer from "./websiteDetail/websiteDetailSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -30,6 +31,7 @@ export const makeStore = () => {
       adminVariants: adminVariantsReducer,
       adminOrders: adminOrdersReducer,
       wishlist: wishlistReducer,
+      websiteDetail: websiteDetailReducer,
     },
   });
 };
