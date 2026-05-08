@@ -244,7 +244,11 @@ export default function CategoriesPage() {
     const map = new Map<string, CategoryRecord & { children: any[] }>();
     const roots: any[] = [];
 
-    filteredCategories.forEach((c) => map.set(c._id, { ...c, children: [] }));
+    filteredCategories.forEach((c) => {
+      if (c._id) {
+        map.set(c._id, { ...c, children: [] });
+      }
+    });
 
     map.forEach((c) => {
       if (c.parentId && map.has(c.parentId)) {
@@ -261,7 +265,7 @@ export default function CategoriesPage() {
   const renderRows = (nodes: any[], depth: number = 0): React.ReactNode[] => {
     return nodes.flatMap((node) => {
       const hasChildren = node.children.length > 0;
-      const isExpanded = expandedNodes.has(node._id) || searchQuery.length > 0;
+      const isExpanded = expandedNodes.has(node._id!) || searchQuery.length > 0;
       const name = node.name || node.title || "Unnamed Category";
 
       const row = (
@@ -276,7 +280,7 @@ export default function CategoriesPage() {
             <div className="flex items-center gap-3">
               {hasChildren ? (
                 <button
-                  onClick={(e) => toggleExpand(node._id, e)}
+                  onClick={(e) => toggleExpand(node._id!, e)}
                   className={`flex items-center justify-center w-6 h-6 rounded-md transition-colors ${isExpanded ? "bg-primary/10 text-primary" : "bg-muted hover:bg-muted-foreground/30 text-muted-foreground"}`}
                 >
                   {isExpanded ? (
@@ -332,7 +336,7 @@ export default function CategoriesPage() {
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 text-muted-foreground hover:bg-muted"
-                onClick={() => openCreate(node._id)}
+                onClick={() => openCreate(node._id!)}
                 title="Add Subcategory"
               >
                 <Plus size={14} />
@@ -590,13 +594,13 @@ export default function CategoriesPage() {
                       </SelectItem>
                       {categories
                         .filter(
-                          (c) => c.type === form.type && c._id !== editingId,
+                          (c) => c.type === form.type && c._id !== editingId && c._id,
                         )
                         .map((c) => {
                           const n = c.title || "Unnamed";
 
                           return (
-                            <SelectItem key={c._id} value={c._id}>
+                            <SelectItem key={c._id} value={c._id!}>
                               {n}{" "}
                               <span className="text-muted-foreground block text-[10px] font-mono">
                                 /{c.slug}
