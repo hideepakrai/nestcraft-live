@@ -16,7 +16,7 @@ export default function GetAllAttributes() {
   const { user: user } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (!user) return;
+    // if (!user) return;
 
     if (!hasAttributesFetched && !attributeLoading) {
       dispatch(fetchAttributes());

@@ -20,7 +20,7 @@ export const fetchAttributes = createAsyncThunk<
   { rejectValue: ApiError }
 >("attributes/fetchAttributes", async (_, { rejectWithValue }) => {
   try {
-    const res = await fetch(`${API_BASE_URL}/commerce/attributes`, {
+    const res = await fetch(`/api/commerce/attribute-sets`, {
       headers: {
         "x-tenant-db": tenantHeader || "",
       },

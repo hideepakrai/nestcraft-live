@@ -13,6 +13,7 @@ import BusinessBlueprintDataInitialiser from "@/components/businessBluePrints/Bu
 import ThemeInitializer from "@/components/theme/ThemeInitializer";
 import GetUser from "@/lib/GetAllDetails/GetUser";
 import { Inter } from "next/font/google";
+import FetchAllData from "@/components/pages/FetchAllData";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -60,6 +61,7 @@ export default async function LocaleLayout({
           <ThemeInitializer />
           <Providers>
             <GetUser user={user} />
+              <FetchAllData/>
             <LayoutWrapper brandConfig={tenantRegistry}>
               {children}
             </LayoutWrapper>
