@@ -27,7 +27,7 @@ export const fetchCategories = createAsyncThunk<
         queryParams.set("includeCounts", params.includeCounts);
     }
     const res = await fetch(
-      `${API_BASE_URL}/commerce/categories?${queryParams.toString()}`,
+      `/api/commerce/categories?${queryParams.toString()}`,
       {
         headers: {
           "x-tenant-db": tenantHeader || "",

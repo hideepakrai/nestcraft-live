@@ -28,6 +28,7 @@ import GetUser from "@/lib/GetAllDetails/GetUser";
 import GetAllForms from "@/lib/GetAllDetails/GetAllForms";
 import { getAuthUser } from "@/lib/getSingleUser";
 import { Toaster } from "sonner";
+import FetchAllData from "@/components/pages/FetchAllData";
 
 const JWT_SECRET =
   process.env.JWT_SECRET || "default_jwt_secret_change_me_in_prod";
@@ -73,11 +74,13 @@ export default async function DashboardLayout({
       <Toaster />
       <BrandingInitializer initialConfig={tenantRegistry} />
       <GetUser user={user} />
-      <GetAllAttributes />
-      <GetAllCategories />
-      <GetAllProducts />
-      <GetCart />
-      <GetAllForms />
+
+      <FetchAllData/>
+      {/* <GetAllAttributes />
+     */}
+      {/* <GetAllProducts /> */}
+      {/* <GetCart /> */}
+      {/* <GetAllForms /> */}
 
       <SidebarProvider>
         <AppSidebar />

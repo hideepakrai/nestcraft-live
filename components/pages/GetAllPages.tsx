@@ -14,12 +14,11 @@ const GetAllPages = () => {
 
     const isApi = useRef<boolean>(false);
     useEffect(() => {
-        if (!isAllPageFetched && !isApi.current) {
+        if (!isAllPageFetched &&
+             !isApi.current) {
             isApi.current = true;
             dispatch(fetchFastApiPagesThunk());
-        } else {
-            isApi.current = false;
-        }
+        } 
     }, [isAllPageFetched]);
     return (
         null

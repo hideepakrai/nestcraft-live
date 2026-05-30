@@ -57,6 +57,17 @@ type ShopMegaTab = {
   };
 };
 
+const DEFAULT_LOGO = "/assets/Image/nestcraft-logo.svg";
+
+const normalizeLogoUrl = (raw?: string) => {
+  if (!raw || typeof raw !== "string") return DEFAULT_LOGO;
+  const trimmed = raw.trim();
+  if (!trimmed || trimmed === "undefined" || trimmed === "null") {
+    return DEFAULT_LOGO;
+  }
+  return trimmed;
+};
+
 
 
 // --- 3-Tier Header Component ---
@@ -197,9 +208,12 @@ const Header = ({
             <Link href="/" className="block py-1">
           
               <img
-                src={logoUrl || "/assets/Image/nestcraft-logo.svg"}
+                src={normalizeLogoUrl(logoUrl)}
                 alt={companyName || "NestCraft"}
                 className="h-14 sm:h-18 w-auto object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = DEFAULT_LOGO;
+                }}
               />
             </Link>
           </div>
@@ -590,9 +604,12 @@ const Footer = ({
       <div className="space-y-6">
         <Link href="/" className="block">
           <img
-            src={logoUrl || "/assets/Image/nestcraft-logo.svg"}
+            src={normalizeLogoUrl(logoUrl)}
             alt={companyName || "NestCraft"}
             className="h-26 w-auto"
+            onError={(e) => {
+              e.currentTarget.src = DEFAULT_LOGO;
+            }}
           />
         </Link>
 
@@ -780,9 +797,10 @@ export default function SiteChrome({
     localStorage.setItem("theme", newTheme);
   };
 
-  const primaryLogo = brandConfig?.logos?.find((l: any) => l.id === "primary")?.url || 
-                     brandConfig?.logos?.[0]?.url || 
-                     "/assets/Image/nestcraft-logo.svg";
+  const primaryLogo = normalizeLogoUrl(
+    brandConfig?.logos?.find((l: any) => l.id === "primary")?.url ||
+      brandConfig?.logos?.[0]?.url,
+  );
   
   const companyName = brandConfig?.companyInfo?.name || "NestCraft";
 

@@ -20,7 +20,7 @@ export default function GetAllCategories({
   const { user } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (!user && type) return;
+    // if (!user && type) return;
 
     if (!hasCategoriesFetched && !categoryLoading) {
       dispatch(fetchCategories());

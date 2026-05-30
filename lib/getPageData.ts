@@ -50,7 +50,7 @@ export const getSingleProduct = cache(async (id: string) => {
   const tenantId = process.env.TENANT_DB_NAME || "kp_nestcraft";
  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   try {
-    const res = await fetch(`${API_URL}/commerce/products/${id}`, {
+    const res = await fetch(`/api/commerce/products/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

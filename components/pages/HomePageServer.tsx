@@ -24,6 +24,7 @@ import GetAllForms from "../forms/GetAllForms";
 import GetAuthTokenFastApi from "../wesiteDetail/GetAuthTokenFastApi";
 import UpdateCurrentPage from "./UpdateCurrentPage";
 import { AnnotatorPlugin } from "../annotationPlugin";
+import FetchAllData from "./FetchAllData";
 
 interface HomePageServerProps {
   data: {
@@ -49,14 +50,8 @@ const HomePageServer = ({ data, lang }: HomePageServerProps) => {
   return (
     <>
       {/* Client-side logic components */}
-      <GetAllPages />
-      <GetAllMenus />
-      <GetAllProducts />
-      <GetAllForms />
-      <GetAuthTokenFastApi />
-      <UpdateCurrentPage />
-      {/* <AnnotatorPlugin/> */}
-
+    {/* <FetchAllData/> */}
+     
       {/* Sections */}
       <Hero section={getSection(content, "Premium Hero Slider") || getSection(content, "Hero")} />
       <USP />

@@ -573,7 +573,7 @@ const CategoryPage = () => {
     (state: RootState) => state.adminCategories,
   );
 
-  console.log(allCategories);
+
 
   const { allProducts, loading } = useSelector(
     (state: RootState) => state.adminProducts,
