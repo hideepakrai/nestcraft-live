@@ -138,7 +138,7 @@ const Header = ({
   const logoClass = isTransparent ? 'h-10 sm:h-14 w-auto object-contain ' : 'h-10 sm:h-14 w-auto object-contain';
 
   const defaultLogo = "/assets/Image/nestcraft-logo.svg";
-  const whiteLogo = "/assets/Image/nestcraft-logo-white.svg";
+  const whiteLogo = "/assets/Image/nestcraft-logo.svg";
 
   let currentLogoSrc = normalizeLogoUrl(logoUrl) || defaultLogo;
   if (isTransparent && currentLogoSrc.includes("nestcraft-logo.svg")) {
@@ -146,9 +146,8 @@ const Header = ({
   }
 
   return (
-    <div className={`w-full z-[1200] transition-all duration-300 ${
-      isScrolled ? 'fixed top-0 left-0 animate-in slide-in-from-top-2' : (isTransparent ? 'absolute top-0 left-0' : 'relative')
-    }`}>
+    <div className={`w-full z-[1200] transition-all duration-300 ${isScrolled ? 'fixed top-0 left-0 animate-in slide-in-from-top-2' : (isTransparent ? 'absolute top-0 left-0' : 'relative')
+      }`}>
       <header className={`w-full flex flex-col relative transition-colors duration-300 ${isTransparent ? 'bg-transparent border-transparent' : 'bg-background border-b border-border'}`}>
         {/* TIER 1: Top Bar */}
         {/* <div className="hidden lg:flex items-center justify-between px-4 sm:px-[5%] xl:px-[8%] py-2 bg-surface/40 border-b border-border text-[12px] text-muted">
@@ -221,14 +220,14 @@ const Header = ({
               className={`flex items-center gap-2 transition-colors ${textColor} ${hoverColor}`}
             >
               <Menu size={24} strokeWidth={1.5} />
-              <span className="text-[13px] font-medium hidden sm:block">Menu</span>
+              <span className="text-[15px] font-medium hidden sm:block">Menu</span>
             </button>
             <button
               onClick={onSearchOpen}
               className={`flex items-center gap-2 transition-colors ${textColor} ${hoverColor}`}
             >
               <Search size={20} strokeWidth={1.5} />
-              <span className="text-[13px] font-normal hidden sm:block">Search</span>
+              <span className="text-[15px] font-normal hidden sm:block">Search</span>
             </button>
           </div>
 
@@ -253,16 +252,16 @@ const Header = ({
               className={`flex items-center gap-2 transition-colors ${textColor} ${hoverColor}`}
             >
               <User size={20} strokeWidth={1.5} />
-              <span className="text-[13px] font-normal hidden lg:block">Login</span>
+              <span className="text-[15px] font-normal hidden lg:block">Login</span>
             </Link>
 
-            <Link
+            {/* <Link
               href="/wishlist"
               className={`flex items-center gap-2 transition-colors ${textColor} ${hoverColor}`}
             >
               <Heart size={20} strokeWidth={1.5} />
               <span className="text-[13px] font-normal hidden lg:block">Wishlist</span>
-            </Link>
+            </Link> */}
 
             <Link
               href="/cart"
@@ -276,8 +275,8 @@ const Header = ({
                   </span>
                 )}
               </div>
-              <span className="text-[13px] font-normal hidden lg:block">
-                Bag
+              <span className="text-[15px] font-normal hidden lg:block">
+                Cart
               </span>
             </Link>
           </div>
@@ -305,7 +304,7 @@ const Header = ({
               transition={{ type: "tween", duration: 0.3 }}
               className="fixed left-0 top-0 z-[2001] h-full w-[min(85vw,400px)] overflow-y-auto bg-background px-8 py-8 shadow-2xl"
             >
-              <div className="mb-6 flex items-center justify-between">
+              <div className="mb-6 flex items-center justify-between border-b pb-4">
                 <img
                   src={normalizeLogoUrl(logoUrl) || defaultLogo}
                   alt={companyName || "NestCraft"}
@@ -336,7 +335,7 @@ const Header = ({
                         <Link
                           href={`/category/${categorySlug}`}
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className={`block text-lg font-semibold flex-1 ${tab.isLuxe ? "text-black" : "text-foreground"} group-hover:text-secondary transition-colors`}
+                          className={`block text-[16px] font-sans font-medium flex-1 ${tab.isLuxe ? "text-black" : "text-foreground"} group-hover:text-secondary transition-colors`}
                         >
                           {tab.title}
                         </Link>
@@ -371,7 +370,7 @@ const Header = ({
                                   <div key={colIdx} className="space-y-4">
                                     {col.sections?.map((section: any, secIdx: number) => (
                                       <div key={secIdx}>
-                                        <h4 className="text-[13px] font-bold text-foreground mb-3">{section.heading}</h4>
+                                        <h4 className="text-[16px] font-sans font-medium text-foreground mb-3">{section.heading}</h4>
                                         <ul className="space-y-2.5">
                                           {section.links?.map((link: any, linkIdx: number) => {
                                             const href = link.href === "#" ? `/category/${link.title.toLowerCase().replace(/\s+/g, '-')}` : link.href;
@@ -380,7 +379,7 @@ const Header = ({
                                                 <Link
                                                   href={href}
                                                   onClick={() => setIsMobileMenuOpen(false)}
-                                                  className="text-[13px] text-muted hover:text-secondary transition-colors block"
+                                                  className="text-[16px] font-sans font-medium text-muted hover:text-secondary transition-colors block"
                                                 >
                                                   {link.title}
                                                 </Link>
@@ -398,7 +397,7 @@ const Header = ({
                         </AnimatePresence>
                       </div>
                     </div>
-                    
+
                   );
                 })}
               </div>
@@ -419,24 +418,24 @@ const Header = ({
                     {(() => {
                       const activeTab = displayMenus.find(t => t.key === expandedDrawerTab);
                       if (!activeTab || !activeTab.columns) return null;
-                      
+
                       const activeCategorySlug = activeTab.title ? activeTab.title.toLowerCase().replace(/\s+/g, '-') : activeTab.key.toLowerCase().replace(/\s+/g, '-');
-                      
+
                       return (
                         <div className="space-y-10">
                           <Link
                             href={`/category/${activeCategorySlug}`}
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className="text-lg font-semibold text-foreground hover:text-secondary transition-colors block mb-4"
+                            className="text-[16px] font-sans font-medium text-foreground hover:text-secondary transition-colors block mb-4"
                           >
-                            See all {activeTab.title}
+                            See all {activeTab.title} products
                           </Link>
 
                           {activeTab.columns.map((col: any, colIdx: number) => (
                             <div key={colIdx} className="space-y-8">
                               {col.sections?.map((section: any, secIdx: number) => (
                                 <div key={secIdx}>
-                                  <h4 className="text-[11px] font-black uppercase tracking-[1.5px] text-muted mb-4">{section.heading}</h4>
+                                  <h4 className="text-[16px] font-sans font-medium text-muted mb-4">{section.heading}</h4>
                                   <ul className="space-y-3">
                                     {section.links?.map((link: any, linkIdx: number) => {
                                       // Optional: Format submenu links too, just in case backend has them as just text names without paths, 
@@ -447,7 +446,7 @@ const Header = ({
                                           <Link
                                             href={href}
                                             onClick={() => setIsMobileMenuOpen(false)}
-                                            className="text-[14px] text-foreground hover:text-secondary transition-colors block"
+                                            className="text-[16px] font-sans font-medium text-foreground hover:text-secondary transition-colors block"
                                           >
                                             {link.title}
                                           </Link>
@@ -531,7 +530,7 @@ const SearchOverlay = ({
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search for furniture..."
-                className="h-16 w-full rounded-[24px] border border-border bg-surface pl-12 pr-4 text-lg font-bold outline-none transition-all placeholder:text-muted/30 focus:border-secondary sm:h-20 sm:pl-16 sm:pr-8 sm:text-2xl"
+                className="h-16 w-full rounded-[24px] border border-border bg-surface pl-12 pr-4 text-lg font-bold outline-none transition-all placeholder:text-black/70 focus:border-secondary sm:h-20 sm:pl-16 sm:pr-8 sm:text-2xl"
               />
             </div>
           </div>
@@ -560,7 +559,7 @@ const Footer = ({
           <img
             src={normalizeLogoUrl(logoUrl)}
             alt={companyName || "NestCraft"}
-            className="h-26 w-auto"
+            className="h-18 w-auto"
             onError={(e) => {
               e.currentTarget.src = DEFAULT_LOGO;
             }}
