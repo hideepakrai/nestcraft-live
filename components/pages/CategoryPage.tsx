@@ -11,8 +11,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { RootState } from "@/lib/store/store";
-import { useSelector, useDispatch } from "react-redux";
-import { setCurrentPages } from "@/lib/store/pages/pagesSlice";
+import { useSelector } from "react-redux";
 import { AnnotatorPlugin } from "../annotationPlugin/AnnotatorPlugin";
 import GetAllPages from "./GetAllPages";
 import {
@@ -22,12 +21,10 @@ import {
   usePathname,
 } from "next/navigation";
 import Link from "next/link";
-import PriceRangeFilter from "../category/PriceRangeFilter";
 import AccordionSection from "../category/accordionSection/AccordionSection";
 import Pagination from "../category/Pagination";
 import PageHead from "../category/pageHead/PageHead";
 import { CategoryRecord } from "@/lib/store/categories/categoriesSlices";
-import { defaultSidebarFilters } from "../category/accordionSection/accordionData";
 
 /* ─── Loading Skeleton ──────────────────────────────────── */
 const ProductCardSkeleton = () => (
@@ -195,9 +192,6 @@ const CategoryPage = () => {
                       : "All"}
                   </span>
                 </div>
-
-                {/* Price slider */}
-                <PriceRangeFilter />
 
                 {/* ── Category filter ── */}
                 <AccordionSection adminTitle="Category" title="Category">
