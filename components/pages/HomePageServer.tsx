@@ -25,6 +25,7 @@ import GetAuthTokenFastApi from "../wesiteDetail/GetAuthTokenFastApi";
 import UpdateCurrentPage from "./UpdateCurrentPage";
 import { AnnotatorPlugin } from "../annotationPlugin";
 import FetchAllData from "./FetchAllData";
+import { FormComp } from "../forms/FormComp";
 
 interface HomePageServerProps {
   data: {
@@ -41,9 +42,12 @@ const HomePageServer = ({ data, lang }: HomePageServerProps) => {
   const ctaBlock = ctaSection?.content?.[0] || ctaSection?.columns?.[0]?.[0];
 
   const ctaTitle = getV(ctaBlock?.props?.title, lang) || ctaBlock?.title || "";
-  const ctaDescription = getV(ctaBlock?.props?.description, lang) || ctaBlock?.description || "";
-  const ctaButtonLabel = getV(ctaBlock?.props?.buttonLabel, lang) || ctaBlock?.buttonLabel || "";
-  const ctaButtonLink = ctaBlock?.props?.buttonLink?.value || ctaBlock?.buttonLink || "/shop";
+  const ctaDescription =
+    getV(ctaBlock?.props?.description, lang) || ctaBlock?.description || "";
+  const ctaButtonLabel =
+    getV(ctaBlock?.props?.buttonLabel, lang) || ctaBlock?.buttonLabel || "";
+  const ctaButtonLink =
+    ctaBlock?.props?.buttonLink?.value || ctaBlock?.buttonLink || "/shop";
 
   return (
     <>
@@ -68,6 +72,7 @@ const HomePageServer = ({ data, lang }: HomePageServerProps) => {
       <Newsletter />
       <InstagramGallery />
       <LogoStrip />
+      <FormComp />
 
       {ctaBlock && (
         <section
@@ -75,7 +80,7 @@ const HomePageServer = ({ data, lang }: HomePageServerProps) => {
           className="bg-foreground/90 text-surface text-center py-[110px] px-[5%] border-t border-border"
         >
           <div className="opacity-100 transform-none">
-             <h2 className="text-[38px] lg:text-[48px] font-bold tracking-tight">
+            <h2 className="text-[38px] lg:text-[48px] font-bold tracking-tight">
               {ctaTitle}
             </h2>
             <p className="text-white/70 font-semibold mt-[18px] mb-[34px] max-w-[600px] mx-auto">
