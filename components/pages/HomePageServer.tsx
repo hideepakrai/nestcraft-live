@@ -24,7 +24,6 @@ import GetAllForms from "../forms/GetAllForms";
 import GetAuthTokenFastApi from "../wesiteDetail/GetAuthTokenFastApi";
 import UpdateCurrentPage from "./UpdateCurrentPage";
 import { AnnotatorPlugin } from "../annotationPlugin";
-import FetchAllData from "./FetchAllData";
 import { FormComp } from "../forms/FormComp";
 
 interface HomePageServerProps {

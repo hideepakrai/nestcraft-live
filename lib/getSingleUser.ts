@@ -6,17 +6,17 @@ function serialize(obj: any) {
 }
 
 export const getAuthUser = cache(async (token: string) => {
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const API_URL = process.env.OWN_URL;
+  const tenantId = process.env.NEXT_PUBLIC_TENANT_ID;
 
   try {
-    const res = await fetch(`${API_BASE_URL}/auth/me`, {
-      credentials: "include",
+    const res = await fetch(`${API_URL}/api/auth/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "x-tenant-db": process.env.NEXT_PUBLIC_TENANT_ID || "",
+        "x-tenant-db": tenantId || "",
       } as HeadersInit,
     });
-    
+
     const data = await res.json();
     return serialize(data);
   } catch (error) {
