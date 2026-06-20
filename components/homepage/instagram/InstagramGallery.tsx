@@ -49,7 +49,7 @@ const InstagramGallery = ({ section: propSection }: { section?: any }) => {
   return (
   <section
     data-annotate-id="home-instagram-gallery-section"
-    className="md:py-[120px] md:px-[5%] py-[50px] px-[5%] "
+    className="md:pt-[120px] md:pb-[60px] md:px-[5%] py-[50px] px-[5%] "
   >
     {/* Native header removed to prevent duplicate titles with Elfsight widget */}
 

@@ -222,76 +222,77 @@ export default function FormPreviewTab({
   handlePreviewSubmit,
 }: FormPreviewTabProps) {
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="relative overflow-hidden bg-surface border border-border/80 shadow-md rounded-[24px] p-6 sm:p-8 md:p-10 backdrop-blur-md transition-all duration-300">
-        {/* Decorative background gradients */}
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute -left-16 -top-16 h-48 w-48 rounded-full bg-secondary/5 blur-2xl dark:bg-secondary/10" />
-          <div className="absolute -right-16 -bottom-16 h-48 w-48 rounded-full bg-primary/5 blur-2xl dark:bg-primary/10" />
-        </div>
+    <></>
+    // <div className="max-w-2xl mx-auto">
+    //   <div className="relative overflow-hidden bg-surface border border-border/80 shadow-md rounded-[24px] p-6 sm:p-8 md:p-10 backdrop-blur-md transition-all duration-300">
+    //     {/* Decorative background gradients */}
+    //     <div className="pointer-events-none absolute inset-0 -z-10">
+    //       <div className="absolute -left-16 -top-16 h-48 w-48 rounded-full bg-secondary/5 blur-2xl dark:bg-secondary/10" />
+    //       <div className="absolute -right-16 -bottom-16 h-48 w-48 rounded-full bg-primary/5 blur-2xl dark:bg-primary/10" />
+    //     </div>
 
-        {/* Header section */}
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-border/60 pb-6 mb-8">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center justify-center p-1.5 rounded-lg bg-secondary/15 text-secondary">
-                <Eye size={14} />
-              </span>
-              <span className="text-[10px] font-black uppercase tracking-[2.5px] text-secondary">
-                Live Form Preview
-              </span>
-            </div>
-            <h3 className="font-heading text-2xl sm:text-3xl font-bold text-foreground mt-3 tracking-tight">
-              Interactive Form Preview
-            </h3>
-            <p className="text-xs text-muted-foreground mt-1">
-              Verify how your custom form renders and captures user submissions
-            </p>
-          </div>
-        </div>
+    //     {/* Header section */}
+    //     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-border/60 pb-6 mb-8">
+    //       <div>
+    //         <div className="flex items-center gap-2">
+    //           <span className="inline-flex items-center justify-center p-1.5 rounded-lg bg-secondary/15 text-secondary">
+    //             <Eye size={14} />
+    //           </span>
+    //           <span className="text-[10px] font-black uppercase tracking-[2.5px] text-secondary">
+    //             Live Form Preview
+    //           </span>
+    //         </div>
+    //         <h3 className="font-heading text-2xl sm:text-3xl font-bold text-foreground mt-3 tracking-tight">
+    //           Interactive Form Preview
+    //         </h3>
+    //         <p className="text-xs text-muted-foreground mt-1">
+    //           Verify how your custom form renders and captures user submissions
+    //         </p>
+    //       </div>
+    //     </div>
 
-        {/* Success message banner */}
-        {isSubmitted && (
-          <div className="flex items-start gap-3.5 p-5 rounded-[16px] bg-secondary/10 border border-secondary/35 text-foreground animate-in fade-in slide-in-from-top-4 duration-300 mb-8 shadow-sm">
-            <CheckCircle2 className="text-secondary shrink-0 mt-0.5" size={18} />
-            <div className="space-y-1">
-              <p className="text-xs font-black uppercase tracking-[1.5px] text-secondary">
-                Form Submitted Successfully
-              </p>
-              <p className="text-sm font-medium leading-relaxed">
-                {successMessage || "Your submission was recorded successfully."}
-              </p>
-            </div>
-          </div>
-        )}
+    //     {/* Success message banner */}
+    //     {isSubmitted && (
+    //       <div className="flex items-start gap-3.5 p-5 rounded-[16px] bg-secondary/10 border border-secondary/35 text-foreground animate-in fade-in slide-in-from-top-4 duration-300 mb-8 shadow-sm">
+    //         <CheckCircle2 className="text-secondary shrink-0 mt-0.5" size={18} />
+    //         <div className="space-y-1">
+    //           <p className="text-xs font-black uppercase tracking-[1.5px] text-secondary">
+    //             Form Submitted Successfully
+    //           </p>
+    //           <p className="text-sm font-medium leading-relaxed">
+    //             {successMessage || "Your submission was recorded successfully."}
+    //           </p>
+    //         </div>
+    //       </div>
+    //     )}
 
-        <form onSubmit={handlePreviewSubmit} className="space-y-6">
-          {fields.map((field) => (
-            <div key={field.id} className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[2px] text-foreground/80 flex items-center gap-1.5 ml-1 select-none">
-                {field.label || field.name}
-                {field.required && <span className="text-rose-500 font-bold">•</span>}
-              </label>
-              {renderInteractiveField(field, previewValues, setPreviewValues)}
-              {field.helperText && (
-                <p className="text-[11px] text-muted-foreground flex items-center gap-1.5 mt-1.5 ml-1 select-none">
-                  <Info size={12} className="text-secondary shrink-0" />
-                  <span className="italic">{field.helperText}</span>
-                </p>
-              )}
-            </div>
-          ))}
+    //     <form onSubmit={handlePreviewSubmit} className="space-y-6">
+    //       {fields.map((field) => (
+    //         <div key={field.id} className="space-y-2">
+    //           <label className="text-[10px] font-black uppercase tracking-[2px] text-foreground/80 flex items-center gap-1.5 ml-1 select-none">
+    //             {field.label || field.name}
+    //             {field.required && <span className="text-rose-500 font-bold">•</span>}
+    //           </label>
+    //           {renderInteractiveField(field, previewValues, setPreviewValues)}
+    //           {field.helperText && (
+    //             <p className="text-[11px] text-muted-foreground flex items-center gap-1.5 mt-1.5 ml-1 select-none">
+    //               <Info size={12} className="text-secondary shrink-0" />
+    //               <span className="italic">{field.helperText}</span>
+    //             </p>
+    //           )}
+    //         </div>
+    //       ))}
 
-          <Button
-            type="submit"
-            className="w-full h-12 bg-primary hover:bg-primary/95 text-white active:scale-[0.98] font-bold text-xs uppercase tracking-[2px] rounded-full mt-8 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-primary/10 transition-all duration-300"
-          >
-            <span>Submit Response</span>
-            <Send size={14} className="transition-transform group-hover/button:translate-x-0.5" />
-          </Button>
-        </form>
-      </div>
-    </div>
+    //       <Button
+    //         type="submit"
+    //         className="w-full h-12 bg-primary hover:bg-primary/95 text-white active:scale-[0.98] font-bold text-xs uppercase tracking-[2px] rounded-full mt-8 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-primary/10 transition-all duration-300"
+    //       >
+    //         <span>Submit Response</span>
+    //         <Send size={14} className="transition-transform group-hover/button:translate-x-0.5" />
+    //       </Button>
+    //     </form>
+    //   </div>
+    // </div>
   );
 }
 

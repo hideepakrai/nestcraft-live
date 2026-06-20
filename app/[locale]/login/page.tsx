@@ -202,7 +202,7 @@ export default function LoginPage() {
       {/* Right Side - Image */}
       <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&q=80&w=1200"
+          src="assets/Image/nestcraft-img.jpeg"
           alt="Lush green background"
           className="absolute inset-0 w-full h-full object-cover animate-in fade-in zoom-in duration-1000"
         />
