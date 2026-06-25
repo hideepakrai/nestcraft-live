@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Check, ChevronLeft, ChevronRight, Pencil, X, VolumeX, Pause } from "lucide-react";
+import { ArrowRight, Check, ChevronLeft, ChevronRight, Pencil, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { RootState } from "@/lib/store/store";
 import { useSelector } from "react-redux";
@@ -132,29 +132,28 @@ const MainHeroSlider = ({ initialSlides }: { initialSlides?: any[] }) => {
 
 
   useEffect(() => {
+    if (!slides || slides.length <= 1) return;
     const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % slides?.length);
-      setProgressKey((prev) => prev + 1);
-    }, 10000);
+      setActiveIndex((prev) => (prev + 1) % slides.length);
+    }, 6000); // 6 seconds auto-rotate
 
     return () => clearInterval(interval);
-  }, [slides.length]);
+  }, [activeIndex, slides.length]);
 
   const goToSlide = (index: number) => {
     setActiveIndex(index);
-    setProgressKey((prev) => prev + 1);
   };
 
   const goNext = () => {
+    if (!slides || slides.length === 0) return;
     setActiveIndex((prev) => (prev + 1) % slides.length);
-    setProgressKey((prev) => prev + 1);
   };
 
   const goPrev = () => {
+    if (!slides || slides.length === 0) return;
     setActiveIndex(
       (prev) => (prev - 1 + slides.length) % slides.length,
     );
-    setProgressKey((prev) => prev + 1);
   };
 
   const activeSlide = editableSlides[activeIndex] || slides[activeIndex];
@@ -255,14 +254,14 @@ const MainHeroSlider = ({ initialSlides }: { initialSlides?: any[] }) => {
   if (!activeSlide) return null;
 
   return (
-    <section className="relative min-h-[calc(100vh-106px)] overflow-hidden">
-      <AnimatePresence mode="wait">
+    <section className="relative min-h-[calc(100vh-106px)] overflow-hidden bg-neutral-950">
+      <AnimatePresence>
         <motion.div
           key={activeSlide.id}
-          initial={{ opacity: 0, scale: 1.06 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1.02 }}
-          transition={{ duration: 0.9, ease: "easeOut" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
           className="absolute inset-0"
         >
           <img
@@ -286,10 +285,10 @@ const MainHeroSlider = ({ initialSlides }: { initialSlides?: any[] }) => {
         <AnimatePresence mode="wait">
           <motion.div
             key={`content-${activeSlide.id}`}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex flex-col items-center w-full"
           >
             <div className="mb-6">
@@ -311,15 +310,23 @@ const MainHeroSlider = ({ initialSlides }: { initialSlides?: any[] }) => {
         </AnimatePresence>
       </div>
 
-      {/* bottom controls (Swadesh style) */}
-      {/* <div className="absolute bottom-8 right-8 z-20 flex gap-4">
-        <button className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm border border-white/20 transition-all hover:bg-black/40">
-          <VolumeX size={18} />
-        </button>
-        <button className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm border border-white/20 transition-all hover:bg-black/40">
-          <Pause size={18} />
-        </button>
-      </div> */}
+      {/* Slider controls */}
+      {slides.length > 1 && (
+        <div className="absolute bottom-10 left-1/2 z-20 flex -translate-x-1/2 gap-3">
+          {slides.map((_: any, index: number) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                activeIndex === index
+                  ? "bg-white w-8"
+                  : "bg-white/40 hover:bg-white/60 w-2.5"
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 };

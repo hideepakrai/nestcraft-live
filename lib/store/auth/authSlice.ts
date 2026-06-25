@@ -38,7 +38,7 @@ interface User {
   _id?: string;
   addresses?: Address[];
   name?: string;
-  wishlist?: ProductFormState[];
+  wishlist?: string[];
   isTenantOwner?: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -64,11 +64,12 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (state, action: PayloadAction<{ user: User }>) => {
       state.user = action.payload.user;
-       if(action.payload.user.role === "tenant_admin"){
-        state.isAuthenticated = true;
-       } else {
-        state.isAuthenticated = false;
-       }
+      //  if(action.payload.user.role === "tenant_admin"){
+      //   state.isAuthenticated = true;
+      //  } else {
+      //   state.isAuthenticated = false;
+      //  }
+      state.isAuthenticated = true;
       state.error = null;
     },
     logout: (state) => {

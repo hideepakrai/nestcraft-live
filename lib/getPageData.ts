@@ -16,7 +16,7 @@ function serialize(obj: any): any {
 }
 
 export const getPageData = cache(async (slug: string) => {
-  const tenantId = process.env.TENANT_DB_NAME || "";
+  const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || "";
   const API_URL = process.env.OWN_URL;
   try {
     const res = await fetch(`${API_URL}/api/cms/pages?slug=${slug}`, {
@@ -25,6 +25,7 @@ export const getPageData = cache(async (slug: string) => {
         "Content-Type": "application/json",
         "x-tenant-db": tenantId,
       },
+      credentials: "include",
     });
 
     if (!res.ok) {
@@ -47,7 +48,7 @@ export const getPageData = cache(async (slug: string) => {
 
 export const getSingleProduct = cache(async (id: string) => {
   const API_URL = process.env.OWN_URL || "http://localhost:3000";
-  const tenantId = process.env.TENANT_DB_NAME || "kp_nestcraft";
+  const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || "kp_nestcraft";
 
   try {
     const res = await fetch(`${API_URL}/api/commerce/products/${id}`, {
@@ -56,6 +57,7 @@ export const getSingleProduct = cache(async (id: string) => {
         "Content-Type": "application/json",
         "x-tenant-db": tenantId,
       },
+      credentials: "include",
     });
 
     if (!res.ok) {
@@ -66,8 +68,6 @@ export const getSingleProduct = cache(async (id: string) => {
     }
 
     const json = await res.json();
-    // console.log("get single product---->",json)
-    // // Support both wrapped { data: ... } and direct response formats
     const data = json.data !== undefined ? json.data : json;
 
     return serialize(data);

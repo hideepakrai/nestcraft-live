@@ -48,7 +48,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ section }) => {
       oldPrice: p.props.oldPrice?.value || p.props.oldPrice || null,
       rating: p.props.rating?.value || p.props.rating || 0,
       tags: (p.props.tags?.value || p.props.tags || []).map((t: any) => getV(t, lang)),
-      image: p.props.image?.value || p.props.image || "",
+      image: p.props.image?.value || p.props.image || "/assets/Image/Sofa.jpg",
       ctaButton: getV(p.props.ctaButton, lang),
       link: getV(p.props.link, lang) || "#",
     }));

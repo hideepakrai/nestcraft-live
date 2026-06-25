@@ -11,6 +11,7 @@ import categoryReducer from "./categories/categoriesSlices";
 import productsReducer from "./products/productsSlices";
 import attributesReducer from "./attributes/attributeSlices";
 import wishlistReducer from "./wishlist/wishlistSlice";
+import ordersReducer from "./orders/ordersSlice";
 import websiteDetailReducer from "./websiteDetail/websiteDetailSlice";
 import MenusReducer from "./menus/menusSlice";
 import formsReducer from "./forms/formsSlice";
@@ -34,6 +35,7 @@ export const makeStore = () => {
       adminVariants: adminVariantsReducer,
       adminOrders: adminOrdersReducer,
       wishlist: wishlistReducer,
+      orders: ordersReducer,
       websiteDetail: websiteDetailReducer,
 
       adminUsers: adminUsersReducer,

@@ -103,12 +103,14 @@ const CartPage = () => {
         <div className="space-y-8">
           <AnimatePresence mode="popLayout">
             {cart.map((item) => {
-              const imageUrl = item.gallery.find(
-                (d) => d.id === item.primaryImageId,
-              )?.url;
-              const alt = item.gallery.find(
-                (d) => d.id === item.primaryImageId,
-              )?.alt;
+              const variantImageId = item.selectedVariant?.imageId;
+              const imageUrl = (variantImageId && item.gallery?.find((d: any) => d.id === variantImageId)?.url)
+                || item.gallery?.find((d) => d.id === item.primaryImageId)?.url
+                || item.gallery?.[0]?.url
+                || "/assets/Image/Sofa.jpg";
+              const alt = item.gallery?.find(
+                (d) => d.id === (variantImageId || item.primaryImageId),
+              )?.alt || item.name || "";
               return (
                 <motion.div
                   key={item.cartItemId}

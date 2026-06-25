@@ -26,6 +26,7 @@ import {
   ClipboardList,
   ChevronRight,
   LogOut,
+  Package,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
@@ -41,6 +42,13 @@ import { toast } from "sonner";
 import { profile } from "console";
 import { logoutThunk } from "@/lib/store/auth/authThunks";
 import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 // --- Types ---
 export type MegaMenuLink = { title: string; href: string };
@@ -245,7 +253,7 @@ const Header = ({
         <div
           className={`grid grid-cols-3 items-center px-4 sm:px-[5%] xl:px-[8%] py-4 ${isTransparent ? "bg-transparent" : "bg-background"}`}
         >
-          {/* Left Column: Menu & Search */}
+          {/* Left Column: Menu & Shop */}
           <div className="flex items-center gap-6 justify-start">
             <button
               onClick={() => setIsMobileMenuOpen(true)}
@@ -256,15 +264,15 @@ const Header = ({
                 Menu
               </span>
             </button>
-            <button
-              onClick={onSearchOpen}
+            <Link
+              href="/shop"
               className={`flex items-center gap-2 transition-colors ${textColor} ${hoverColor}`}
             >
-              <Search size={20} strokeWidth={1.5} />
+              <Store size={20} strokeWidth={1.5} />
               <span className="text-[15px] font-normal hidden sm:block">
-                Search
+                Shop
               </span>
-            </button>
+            </Link>
           </div>
 
           {/* Center Column: Logo */}
@@ -283,44 +291,18 @@ const Header = ({
 
           {/* Right Column: Icons */}
           <div className="flex items-center gap-6 justify-end">
-            {isAuthenticated ? (
-              <>
-                <Link
-                  href={
-                    isAuthenticated && user?.role != "customer"
-                      ? "/admin"
-                      : "/account"
-                  }
-                  className={`flex items-center gap-2 transition-colors ${textColor} ${hoverColor}`}
-                >
-                  <User size={20} strokeWidth={1.5} />
-                  <span className="text-[15px] font-normal hidden lg:block">
-                    Account
-                  </span>
-                </Link>
-                <Button
-                  // href={"/logout"}
-                  onClick={handleLogout}
-                  className={`flex items-center gap-2 transition-colors ${textColor} ${hoverColor}`}
-                >
-                  <LogOut size={20} strokeWidth={1.5} />
-                  <span className="text-[15px] font-normal hidden lg:block">
-                    Logout
-                  </span>
-                </Button>
-              </>
-            ) : (
-              <Link
-                href="/login"
-                className={`flex items-center gap-2 transition-colors ${textColor} ${hoverColor}`}
-              >
-                <User size={20} strokeWidth={1.5} />
-                <span className="text-[15px] font-normal hidden lg:block">
-                  Login
-                </span>
-              </Link>
-            )}
+            {/* Search */}
+            <button
+              onClick={onSearchOpen}
+              className={`flex items-center gap-2 transition-colors ${textColor} ${hoverColor}`}
+            >
+              <Search size={20} strokeWidth={1.5} />
+              <span className="text-[15px] font-normal hidden lg:block">
+                Search
+              </span>
+            </button>
 
+            {/* Wishlist */}
             {isAuthenticated && (
               <Link
                 href="/wishlist"
@@ -342,6 +324,7 @@ const Header = ({
               </Link>
             )}
 
+            {/* Cart */}
             <Link
               href="/cart"
               className={`flex items-center gap-2 transition-colors ${textColor} ${hoverColor}`}
@@ -358,6 +341,58 @@ const Header = ({
                 Cart
               </span>
             </Link>
+
+            {/* Dropdown Button / Login Link */}
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className={`flex items-center gap-2 transition-colors cursor-pointer outline-none ${textColor} ${hoverColor}`}>
+                    <User size={20} strokeWidth={1.5} />
+                    <span className="text-[15px] font-normal hidden lg:block">
+                      Account
+                    </span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-surface border border-border p-2 rounded-[14px] shadow-lg mt-2 z-[1300] outline-none">
+                  <DropdownMenuItem asChild className="cursor-pointer focus:bg-secondary/10 focus:text-secondary hover:bg-secondary/10 hover:text-secondary transition-all rounded-lg p-2">
+                    <Link
+                      href={user?.role !== "customer" ? "/admin" : "/account"}
+                      className="flex items-center gap-2.5 px-2 py-1.5 text-sm font-semibold text-foreground/80"
+                    >
+                      <User size={16} strokeWidth={1.5} className="text-secondary" />
+                      Account Info
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="cursor-pointer focus:bg-secondary/10 focus:text-secondary hover:bg-secondary/10 hover:text-secondary transition-all rounded-lg p-2">
+                    <Link
+                      href="/orders"
+                      className="flex items-center gap-2.5 px-2 py-1.5 text-sm font-semibold text-foreground/80"
+                    >
+                      <Package size={16} strokeWidth={1.5} className="text-secondary" />
+                      My Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-border/60 my-1 mx-1" />
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="cursor-pointer focus:bg-red-500/10 focus:text-red-600 hover:bg-red-500/10 hover:text-red-600 transition-all rounded-lg p-2 text-red-500 dark:text-red-400 font-semibold flex items-center gap-2.5 px-2 py-1.5 text-sm"
+                  >
+                    <LogOut size={16} strokeWidth={1.5} />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link
+                href="/login"
+                className={`flex items-center gap-2 transition-colors ${textColor} ${hoverColor}`}
+              >
+                <User size={20} strokeWidth={1.5} />
+                <span className="text-[15px] font-normal hidden lg:block">
+                  Login
+                </span>
+              </Link>
+            )}
           </div>
         </div>
       </header>

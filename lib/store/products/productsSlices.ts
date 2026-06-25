@@ -52,7 +52,7 @@ interface ProductsState {
   hasFetched: boolean;
   cmsFilters: any[];
   totalProducts: number;
-  loadingMore:boolean
+  loadingMore: boolean;
 }
 
 const initialFormState: ProductFormState = {
@@ -89,7 +89,7 @@ const initialState: ProductsState = {
   hasFetched: false,
   cmsFilters: [],
   totalProducts: 0,
-  loadingMore: false
+  loadingMore: false,
 };
 
 const productsSlice = createSlice({
@@ -239,6 +239,7 @@ const productsSlice = createSlice({
           state.loadingMore = true;
         } else {
           state.loading = true;
+          state.hasFetched = false;
         }
       })
       .addCase(fetchProductsByCategory.fulfilled, (state, action) => {
@@ -261,11 +262,13 @@ const productsSlice = createSlice({
         state.cmsFilters = action.payload.filters ?? state.cmsFilters;
         state.loading = false;
         state.loadingMore = false;
+        state.hasFetched = true;
       })
       .addCase(fetchProductsByCategory.rejected, (state, action) => {
         state.loading = false;
         state.loadingMore = false;
         state.error = action.payload as string;
+        state.hasFetched = true;
       });
     // .addCase(fetchProductsByCategory.pending, (state) => {
     //   state.loading = true;

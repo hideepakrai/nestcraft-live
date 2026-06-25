@@ -8,6 +8,7 @@ import { loginThunk } from "@/lib/store/auth/authThunks";
 import { toast } from "sonner";
 import Link from "next/link";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { generateCodeChallenge, generateCodeVerifier } from "@/lib/pkce";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -26,9 +27,39 @@ export default function LoginPage() {
     try {
       const response = await dispatch(loginThunk({ email, password })).unwrap();
       if (response.user) {
-        console.log("====>>>", response)
+        if (response.user.role == "customer") {
+          router.push("/");
+        } else if (response.user.role == "tenant_admin") {
+          const codeVerifier = generateCodeVerifier();
+          const codeChallenge = await generateCodeChallenge(codeVerifier);
+          const environment = process.env.NEXT_PUBLIC_ENVIRONMENT
+            ? process.env.NEXT_PUBLIC_ENVIRONMENT
+            : "prod";
+          const redirectUri =
+            environment == "dev"
+              ? "http://localhost:3001/auth/callback"
+              : "http://kalptree.xyz/auth/callback";
+          const res = await fetch("/api/auth/sso/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-tenant-db": process.env.NEXT_PUBLIC_TENANT_ID!,
+            },
+            body: JSON.stringify({
+              codeChallenge,
+              codeVerifier,
+              redirectUri,
+            }),
+            credentials: "include",
+          });
+
+          const response = await res.json();
+
+          if (response.success) {
+            window.open(redirectUri + `?code=${response.code}`, "_blank");
+          }
+        }
         toast.success("Welcome back!");
-        router.push("/");
       }
     } catch (err: any) {
       setError(err || "Authentication failed");
@@ -171,7 +202,7 @@ export default function LoginPage() {
       {/* Right Side - Image */}
       <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&q=80&w=1200"
+          src="assets/Image/nestcraft-img.jpeg"
           alt="Lush green background"
           className="absolute inset-0 w-full h-full object-cover animate-in fade-in zoom-in duration-1000"
         />

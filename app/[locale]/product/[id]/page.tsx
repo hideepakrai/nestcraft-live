@@ -1,10 +1,13 @@
-
 import Component from "@/components/pages/ProductDetailPage";
 import { getSingleProduct } from "@/lib/getPageData";
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProdPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
-  console.log("id poprdicurr", id)
+  console.log("id poprdicurr", id);
   const product = await getSingleProduct(id);
 
   if (!product) {

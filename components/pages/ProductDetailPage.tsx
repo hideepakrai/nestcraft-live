@@ -645,16 +645,16 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
 
   // Get primary image URL
   const primaryImage = useMemo(() => {
-    if (!currentProduct) return "";
+    if (!currentProduct) return "/assets/Image/Sofa.jpg";
     const primaryImg = currentProduct.gallery?.find(
       (img: any) => img.id === currentProduct.primaryImageId,
     );
-    return primaryImg?.url || currentProduct.gallery?.[0]?.url || "";
+    return primaryImg?.url || currentProduct.gallery?.[0]?.url || "/assets/Image/Sofa.jpg";
   }, [currentProduct]);
 
   // Get all gallery images
   const galleryImages = useMemo(() => {
-    if (!currentProduct?.gallery) return [];
+    if (!currentProduct?.gallery || currentProduct.gallery.length === 0) return ["/assets/Image/Sofa.jpg"];
     return currentProduct.gallery.map((img: any) => img.url);
   }, [currentProduct]);
 
@@ -736,6 +736,14 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
 
     if (matchingVariant) {
       setSelectedVariant(matchingVariant);
+      if (matchingVariant.imageId && currentProduct?.gallery) {
+        const imgIndex = currentProduct.gallery.findIndex(
+          (img: any) => img.id === matchingVariant.imageId
+        );
+        if (imgIndex !== -1) {
+          setSelectedImage(imgIndex);
+        }
+      }
     }
   };
 

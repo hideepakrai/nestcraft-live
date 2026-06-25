@@ -9,6 +9,8 @@ export interface VariantRow {
   createdAt: string;
   optionValues: Record<string, string>;
   title?: string;
+  imageId?: string;
+  image?: string;
 }
 
 export type ProductOption = {

@@ -16,13 +16,17 @@ const ContactHero = ({ section }: { section?: any }) => {
   }, [pathname]);
 
   const currentSection = useMemo(() => {
-    return section || currentPages?.content?.find((s: any) => s?.adminTitle === "Contact Hero");
+    return (
+      section ||
+      currentPages?.content?.find((s: any) => s?.adminTitle === "Contact Hero")
+    );
   }, [section, currentPages]);
 
   const getV = (field: any) => {
     if (!field) return "";
     const val = field.value !== undefined ? field.value : field;
-    if (val && typeof val === "object" && !Array.isArray(val)) return val[lang] || val.en || "";
+    if (val && typeof val === "object" && !Array.isArray(val))
+      return val[lang] || val.en || "";
     return val || "";
   };
 
@@ -43,14 +47,14 @@ const ContactHero = ({ section }: { section?: any }) => {
   const mainImage = getV(p.mainImage) || defaultContactHeroData.props.mainImage;
 
   return (
-    <section 
+    <section
       data-annotate-id="contact-hero-section"
       className="relative min-h-[70vh] flex items-center px-[5%] overflow-hidden border-b border-border"
     >
       <div className="absolute inset-0 z-0">
-        <img 
-          src={bgImage} 
-          alt="Office" 
+        <img
+          src={bgImage}
+          alt="Office"
           className="w-full h-full object-cover opacity-10 grayscale"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
@@ -63,37 +67,46 @@ const ContactHero = ({ section }: { section?: any }) => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <p className="text-secondary uppercase tracking-[6px] text-[11px] font-black mb-6">{subtitle}</p>
+            <p className="text-secondary uppercase tracking-[6px] text-[11px] font-black mb-6">
+              {subtitle}
+            </p>
             <h1 className="text-[64px] lg:text-[92px] font-black leading-[0.9] tracking-tighter mb-8">
-              {headingLine1} <br /> <span className="text-secondary italic font-serif font-normal">{headingLine2}</span>
+              {headingLine1} <br />{" "}
+              <span className="text-secondary italic font-serif font-normal">
+                {headingLine2}
+              </span>
             </h1>
             <p className="text-xl text-muted font-semibold max-w-[500px] leading-relaxed">
               {description}
             </p>
-            
+
             <div className="mt-12 flex gap-8">
               <div className="flex flex-col">
-                <span className="text-[10px] font-black uppercase tracking-[2px] text-muted mb-2">{showroomLabel}</span>
+                <span className="text-[10px] font-black uppercase tracking-[2px] text-muted mb-2">
+                  {showroomLabel}
+                </span>
                 <span className="font-bold text-lg">{showroomLocation}</span>
               </div>
               <div className="w-px h-12 bg-border" />
               <div className="flex flex-col">
-                <span className="text-[10px] font-black uppercase tracking-[2px] text-muted mb-2">{supportLabel}</span>
+                <span className="text-[10px] font-black uppercase tracking-[2px] text-muted mb-2">
+                  {supportLabel}
+                </span>
                 <span className="font-bold text-lg">{supportHours}</span>
               </div>
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="hidden lg:block relative"
           >
             <div className="aspect-[4/5] rounded-[40px] overflow-hidden border border-border shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700">
-              <img 
-                src={mainImage} 
-                alt="Studio" 
+              <img
+                src={mainImage}
+                alt="Studio"
                 className="w-full h-full object-cover"
               />
             </div>

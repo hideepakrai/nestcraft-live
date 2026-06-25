@@ -13,6 +13,8 @@ import { FAQ } from '../contactpage/faq/FAQ';
 
 const ContactPage = () => {
   const { user } = useSelector((state: RootState) => state.auth)
+  const { currentPages } = useSelector((state: RootState) => state.pages)
+
 
   return (
     <>

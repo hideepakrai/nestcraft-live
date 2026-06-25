@@ -1,9 +1,18 @@
 "use client";
 
-import React, { useState } from 'react';
-import { motion } from 'motion/react';
-import { Mail, Phone, MapPin, Send, CheckCircle2, ArrowRight } from 'lucide-react';
-import { defaultContactFormData } from './contactFormData';
+import React, { useState, useMemo, useEffect } from "react";
+import { useParams } from "next/navigation";
+import { motion } from "motion/react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  CheckCircle2,
+  ArrowRight,
+} from "lucide-react";
+import { defaultContactFormData } from "./contactFormData";
+import { useAppSelector } from "@/lib/store/hooks";
 
 const iconMap: Record<string, any> = {
   Mail,
@@ -11,7 +20,7 @@ const iconMap: Record<string, any> = {
   MapPin,
   Send,
   CheckCircle2,
-  ArrowRight
+  ArrowRight,
 };
 
 interface ContactFormProps {
@@ -19,38 +28,182 @@ interface ContactFormProps {
 }
 
 export const ContactForm: React.FC<ContactFormProps> = ({ data }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
+  const { currentPages } = useAppSelector((state) => state.pages);
+  const { locale } = useParams();
+  const lang = (locale as string) || "en";
+
+  const getLocalizedValue = (val: any) => {
+    if (!val) return "";
+    if (typeof val === "object") {
+      return val[lang] || val.en || "";
+    }
+    return val;
+  };
+
+  // Find sections from Redux store currentPages
+  const contactInfoSection = useMemo(() => {
+    return currentPages?.content?.find(
+      (sec: any) => sec.type === "contact-info",
+    );
+  }, [currentPages]);
+
+  const formSection = useMemo(() => {
+    return currentPages?.content?.find((sec: any) => sec.type === "form");
+  }, [currentPages]);
+
+  // Resolve Contact Info
+  const contactHeading = useMemo(() => {
+    const heading =
+      contactInfoSection?.props?.sectionHeading ||
+      defaultContactFormData.props.sectionHeading;
+    return getLocalizedValue(heading);
+  }, [contactInfoSection, lang]);
+
+  const contactItems = useMemo(() => {
+    if (
+      contactInfoSection?.content &&
+      Array.isArray(contactInfoSection.content)
+    ) {
+      return contactInfoSection.content.map((item: any) => ({
+        icon: item.props?.icon,
+        label: item.props?.label,
+        value: item.props?.value,
+        href: item.props?.href,
+      }));
+    }
+    return defaultContactFormData.props.contactItems;
+  }, [contactInfoSection]);
+
+  // Resolve Form Content
+  const formProps = formSection?.props;
+  const formConfig = formProps?.form;
+
+  // Render fields from config, if not present fallback to standard default fields
+  const defaultFields = useMemo(
+    () => [
+      {
+        id: "field-name",
+        type: "text",
+        name: "name",
+        label: defaultContactFormData.props.nameLabel,
+        placeholder: defaultContactFormData.props.namePlaceholder,
+        required: true,
+      },
+      {
+        id: "field-email",
+        type: "email",
+        name: "email",
+        label: defaultContactFormData.props.emailLabel,
+        placeholder: defaultContactFormData.props.emailPlaceholder,
+        required: true,
+      },
+      {
+        id: "field-subject",
+        type: "select",
+        name: "subject",
+        label: defaultContactFormData.props.subjectLabel,
+        placeholder: { en: "Select an option", hi: "एक विकल्प चुनें" },
+        required: true,
+        options: defaultContactFormData.props.subjectOptions
+          .filter((opt) => opt.value !== "")
+          .map((opt) => ({
+            value: opt.value,
+            label: opt.label,
+          })),
+      },
+      {
+        id: "field-message",
+        type: "textarea",
+        name: "message",
+        label: defaultContactFormData.props.messageLabel,
+        placeholder: defaultContactFormData.props.messagePlaceholder,
+        required: true,
+      },
+    ],
+    [],
+  );
+
+  const fieldsToRender = useMemo(() => {
+    return formConfig?.fields || defaultFields;
+  }, [formConfig, defaultFields]);
+
+  const [formData, setFormData] = useState<Record<string, any>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Merge provided data with defaults. We use 'en' for now, but this supports dynamic CMS passing.
-  const content = data || defaultContactFormData.props;
+  // Initialize form state
+  useEffect(() => {
+    const initial: Record<string, any> = {};
+    fieldsToRender.forEach((field: any) => {
+      const key = field.name || field.id;
+      initial[key] = field.type === "checkbox" ? false : "";
+    });
+    setFormData(initial);
+  }, [fieldsToRender]);
+
+  const formHeading =
+    getLocalizedValue(formProps?.formHeading) ||
+    getLocalizedValue(defaultContactFormData.props.formHeading);
+  const formDescription =
+    getLocalizedValue(formProps?.formDescription) ||
+    getLocalizedValue(defaultContactFormData.props.formDescription);
+  const successHeading =
+    getLocalizedValue(formProps?.successHeading) ||
+    getLocalizedValue(defaultContactFormData.props.successHeading);
+  const successDescription =
+    getLocalizedValue(formProps?.successDescription) ||
+    getLocalizedValue(defaultContactFormData.props.successDescription);
+  const successButtonText =
+    getLocalizedValue(formProps?.successButtonText) ||
+    getLocalizedValue(defaultContactFormData.props.successButtonText);
+  const submitButtonText =
+    getLocalizedValue(formProps?.submitButtonText) ||
+    getLocalizedValue(defaultContactFormData.props.submitButtonText);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      const isDynamic = !!formConfig;
+      const endpoint = isDynamic ? "/api/form-data" : "/api/contact";
+      const payload = isDynamic
+        ? { formId: formConfig.id, data: formData }
+        : formData;
+
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      const tenantId = process.env.NEXT_PUBLIC_TENANT_ID;
+      if (tenantId) {
+        headers["x-tenant-db"] = tenantId;
+      }
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload),
       });
 
       const responseData = await response.json();
 
-      if (responseData.success) {
+      if (
+        response.ok &&
+        (responseData.success || responseData.id || response.status === 201)
+      ) {
         setIsSubmitted(true);
-        setFormData({ name: '', email: '', subject: '', message: '' });
+        // Reset form values
+        const resetData: Record<string, any> = {};
+        fieldsToRender.forEach((f: any) => {
+          const key = f.name || f.id;
+          resetData[key] = f.type === "checkbox" ? false : "";
+        });
+        setFormData(resetData);
       } else {
-        alert(responseData.message || "Something went wrong. Please try again.");
+        alert(
+          responseData.message || "Something went wrong. Please try again.",
+        );
       }
     } catch (error) {
       console.error("Submission error:", error);
@@ -60,8 +213,25 @@ export const ContactForm: React.FC<ContactFormProps> = ({ data }) => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData((prev) => ({ ...prev, [name]: checked }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const getFieldGridClass = (type: string) => {
+    if (type === "textarea" || type === "checkbox" || type === "terms") {
+      return "col-span-2";
+    }
+    return "col-span-2 md:col-span-1";
   };
 
   return (
@@ -74,9 +244,11 @@ export const ContactForm: React.FC<ContactFormProps> = ({ data }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl font-black mb-10 tracking-tight">{content.sectionHeading?.en}</h2>
+            <h2 className="text-3xl font-black mb-10 tracking-tight">
+              {contactHeading}
+            </h2>
             <div className="space-y-12">
-              {content.contactItems?.map((item: any, index: number) => {
+              {contactItems?.map((item: any, index: number) => {
                 const IconComponent = iconMap[item.icon] || MapPin;
                 return (
                   <div key={index} className="group cursor-pointer">
@@ -85,16 +257,19 @@ export const ContactForm: React.FC<ContactFormProps> = ({ data }) => {
                         <IconComponent size={18} />
                       </div>
                       <span className="text-[11px] font-black uppercase tracking-[2px] text-muted">
-                        {item.label?.en}
+                        {getLocalizedValue(item.label)}
                       </span>
                     </div>
                     {item.href ? (
-                      <a href={item.href} className="text-2xl font-bold tracking-tight inline-block">
-                        {item.value?.en}
+                      <a
+                        href={item.href}
+                        className="text-2xl font-bold tracking-tight inline-block"
+                      >
+                        {getLocalizedValue(item.value)}
                       </a>
                     ) : (
                       <p className="text-2xl font-bold tracking-tight">
-                        {item.value?.en}
+                        {getLocalizedValue(item.value)}
                       </p>
                     )}
                     <div className="w-0 group-hover:w-full h-px bg-secondary transition-all duration-500 mt-2" />
@@ -113,108 +288,149 @@ export const ContactForm: React.FC<ContactFormProps> = ({ data }) => {
           className="relative"
         >
           <div className="absolute -top-10 -right-10 w-40 h-40 bg-secondary/5 rounded-full blur-3xl" />
-          
+
           <div className="bg-surface border border-border p-10 lg:p-16 rounded-[48px] shadow-2xl relative z-10">
             {isSubmitted ? (
               <div className="py-20 text-center">
                 <div className="w-24 h-24 bg-secondary/10 text-secondary rounded-full flex items-center justify-center mx-auto mb-8">
                   <CheckCircle2 size={48} />
                 </div>
-                <h3 className="text-4xl font-black mb-4 tracking-tight">{content.successHeading?.en}</h3>
+                <h3 className="text-4xl font-black mb-4 tracking-tight">
+                  {successHeading}
+                </h3>
                 <p className="text-muted font-semibold mb-10 text-lg">
-                  {content.successDescription?.en}
+                  {successDescription}
                 </p>
-                <button 
+                <button
                   onClick={() => setIsSubmitted(false)}
-                  className="bg-primary text-white px-12 h-14 rounded-full text-[15px] font-bold uppercase tracking-wider hover:bg-primary/90 transition-all"
+                  className="bg-primary text-white px-12 h-14 rounded-full text-[15px] font-bold uppercase tracking-wider hover:bg-primary/90 transition-all cursor-pointer"
                 >
-                  {content.successButtonText?.en}
+                  {successButtonText}
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-10">
                 <div className="space-y-2">
-                  <h3 className="text-3xl font-black tracking-tight mb-2">{content.formHeading?.en}</h3>
-                  <p className="text-muted font-semibold">{content.formDescription?.en}</p>
+                  <h3 className="text-3xl font-black tracking-tight mb-2">
+                    {formHeading}
+                  </h3>
+                  <p className="text-muted font-semibold">{formDescription}</p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-10">
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-[3px] text-muted ml-1">
-                      {content.nameLabel?.en}
-                    </label>
-                    <input 
-                      required
-                      type="text" 
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder={content.namePlaceholder?.en}
-                      className="w-full bg-transparent border-b-2 border-border py-4 outline-none focus:border-secondary transition-all font-bold text-xl placeholder:text-muted/30"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-[3px] text-muted ml-1">
-                      {content.emailLabel?.en}
-                    </label>
-                    <input 
-                      required
-                      type="email" 
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder={content.emailPlaceholder?.en}
-                      className="w-full bg-transparent border-b-2 border-border py-4 outline-none focus:border-secondary transition-all font-bold text-xl placeholder:text-muted/30"
-                    />
-                  </div>
+                <div className="grid grid-cols-2 gap-10">
+                  {fieldsToRender.map((field: any) => {
+                    const fieldKey = field.name || field.id;
+                    const gridClass = getFieldGridClass(field.type);
+
+                    return (
+                      <div key={field.id} className={`${gridClass} space-y-3`}>
+                        <label className="text-[10px] font-black uppercase tracking-[3px] text-muted ml-1 flex items-center gap-1 select-none">
+                          {getLocalizedValue(field.label)}
+                          {field.required && (
+                            <span className="text-rose-500 font-bold ml-0.5">
+                              •
+                            </span>
+                          )}
+                        </label>
+
+                        {field.type === "textarea" ? (
+                          <textarea
+                            required={field.required}
+                            name={fieldKey}
+                            value={formData[fieldKey] || ""}
+                            onChange={handleChange}
+                            rows={4}
+                            placeholder={getLocalizedValue(field.placeholder)}
+                            className="w-full bg-transparent border-b-2 border-border py-4 outline-none focus:border-secondary transition-all font-bold text-xl resize-none placeholder:text-muted/30"
+                          />
+                        ) : field.type === "select" ? (
+                          <select
+                            required={field.required}
+                            name={fieldKey}
+                            value={formData[fieldKey] || ""}
+                            onChange={handleChange}
+                            className="w-full bg-transparent border-b-2 border-border py-4 outline-none focus:border-secondary transition-all font-bold text-xl appearance-none cursor-pointer"
+                          >
+                            <option value="" disabled className="bg-surface">
+                              {getLocalizedValue(field.placeholder) ||
+                                "Select an option"}
+                            </option>
+                            {(field.options || []).map(
+                              (option: any, index: number) => {
+                                const val =
+                                  typeof option === "object"
+                                    ? option.value
+                                    : option;
+                                const label =
+                                  typeof option === "object"
+                                    ? getLocalizedValue(option.label)
+                                    : option;
+                                return (
+                                  <option
+                                    key={index}
+                                    value={val}
+                                    className="bg-surface"
+                                  >
+                                    {label}
+                                  </option>
+                                );
+                              },
+                            )}
+                          </select>
+                        ) : field.type === "checkbox" ? (
+                          <div className="flex items-center gap-3 py-2">
+                            <input
+                              type="checkbox"
+                              required={field.required}
+                              name={fieldKey}
+                              checked={!!formData[fieldKey]}
+                              onChange={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  [fieldKey]: e.target.checked,
+                                });
+                              }}
+                              className="w-5 h-5 rounded border-border text-primary focus:ring-secondary cursor-pointer"
+                              id={field.id}
+                            />
+                            <label
+                              htmlFor={field.id}
+                              className="text-sm font-bold text-muted cursor-pointer select-none"
+                            >
+                              {getLocalizedValue(field.placeholder) ||
+                                getLocalizedValue(field.label)}
+                            </label>
+                          </div>
+                        ) : (
+                          <input
+                            required={field.required}
+                            type={field.type || "text"}
+                            name={fieldKey}
+                            value={formData[fieldKey] || ""}
+                            onChange={handleChange}
+                            placeholder={getLocalizedValue(field.placeholder)}
+                            className="w-full bg-transparent border-b-2 border-border py-4 outline-none focus:border-secondary transition-all font-bold text-xl placeholder:text-muted/30"
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
 
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-[3px] text-muted ml-1">
-                    {content.subjectLabel?.en}
-                  </label>
-                  <select 
-                    required
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    className="w-full bg-transparent border-b-2 border-border py-4 outline-none focus:border-secondary transition-all font-bold text-xl appearance-none cursor-pointer"
-                  >
-                    {content.subjectOptions?.map((option: any, index: number) => (
-                      <option key={index} value={option.value} className="bg-surface">
-                        {option.label?.en}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-[3px] text-muted ml-1">
-                    {content.messageLabel?.en}
-                  </label>
-                  <textarea 
-                    required
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    rows={4}
-                    placeholder={content.messagePlaceholder?.en}
-                    className="w-full bg-transparent border-b-2 border-border py-4 outline-none focus:border-secondary transition-all font-bold text-xl resize-none placeholder:text-muted/30"
-                  />
-                </div>
-
-                <button 
+                <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="group w-full flex relative h-12 items-center justify-center rounded-full bg-primary px-8 text-[14px] font-semibold uppercase tracking-wider text-white transition-all overflow-hidden scroll-mt-20"
+                  className="group w-full flex relative h-12 items-center justify-center rounded-full bg-primary px-8 text-[14px] font-semibold uppercase tracking-wider text-white transition-all overflow-hidden scroll-mt-20 cursor-pointer"
                 >
                   <div className="absolute inset-0 bg-secondary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                   <span className="relative z-10 flex gap-2 items-center">
-                    {content.submitButtonText?.en} 
-                    <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
+                    {submitButtonText}
+                    <ArrowRight
+                      size={20}
+                      className="group-hover:translate-x-2 transition-transform"
+                    />
                   </span>
                 </button>
-
               </form>
             )}
           </div>

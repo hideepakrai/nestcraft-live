@@ -65,8 +65,15 @@ const PageHead = ({
         : parent?.id
       : null;
 
+  const isShopPage = useMemo(() => {
+    return pathname.split("/").filter(Boolean).includes("shop");
+  }, [pathname]);
 
-  const finalAllChildren = similar ? tree.find((d) => d.id == similar) : tree[0];
+  const finalAllChildren = similar
+    ? tree.find((d) => d.id == similar)
+    : isShopPage
+    ? { children: tree }
+    : tree[0];
 
   const lang = useMemo(() => {
     const segments = pathname.split("/").filter(Boolean);
@@ -109,22 +116,35 @@ const PageHead = ({
 
   const pills = p.pills || defaultPills(productCount);
 
+  const displayBadge = isShopPage ? "Collection" : badge;
+  const displayTitle = isShopPage
+    ? "Shop"
+    : parent && parent !== "all"
+    ? parent.name
+    : "All Products";
+  const displayDescription = isShopPage
+    ? "Explore our entire range of design-led furniture and home essentials. Crafted with purpose, built for life."
+    : parent && parent !== "all"
+    ? parent.description
+    : "Explore our entire range of design-led furniture and home essentials. Crafted with purpose, built for life.";
+
   return (
     <section className="pagehead">
       <div className="pagehead-inner">
         <div className="pagehead-content">
           <small className="text-secondary tracking-[3px] uppercase text-[10px] font-black mb-2 block">
-            {badge}
+            {displayBadge}
           </small>
           <h1 className="text-[46px] font-black leading-[1.05] tracking-tight">
-            {parent != "all" ? parent?.name : "All Products"}
+            {displayTitle}
           </h1>
           <p className="text-muted font-bold mt-2.5 max-w-[70ch] leading-relaxed">
-            {parent != "all" ? parent?.description : "All Products"}
+            {displayDescription}
           </p>
 
           <div className="flex flex-wrap gap-2.5 mt-4">
             {finalAllChildren &&
+              finalAllChildren.children &&
               finalAllChildren.children.length > 0 &&
               finalAllChildren.children.map((sub: any, idx: number) => {
                 const subTitle =
@@ -163,7 +183,9 @@ const PageHead = ({
               </div>
             );
           })} */}
-          <div className="pill">{totalProducts}</div>
+          <div className="pill">
+            {totalProducts} {totalProducts === 1 ? "Product" : "Products"}
+          </div>
         </div>
       </div>
     </section>

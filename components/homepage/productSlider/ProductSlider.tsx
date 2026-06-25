@@ -109,7 +109,7 @@ const ProductSlider = ({ section: propSection }: ProductSliderProps) => {
           const price = getV(dp.price) || getV(prod.price) || "";
           const prodBadge = getV(dp.badge) || getV(prod.badge) || "";
           const id = prod.id || idx;
-          const img = dp.image?.value || dp.image || prod.img || prod.image || "";
+          const img = dp.image?.value || dp.image || prod.img || prod.image || "/assets/Image/Sofa.jpg";
 
             return (
               <div
