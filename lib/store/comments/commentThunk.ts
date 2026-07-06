@@ -9,7 +9,7 @@ export const fetchCommentsThunk = createAsyncThunk(
   'comments/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/comments`, {
+      const response = await fetch(`/api/comments`, {
         headers: {
           "x-tenant-db": tenantHeader || "",
         },
@@ -32,7 +32,7 @@ export const fetchCommentsByPageThunk = createAsyncThunk(
   'comments/fetchByPage',
   async (pageId: string, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/comments?pageId=${pageId}`, {
+      const response = await fetch(`/api/comments?pageId=${pageId}`, {
         headers: {
           "x-tenant-db": tenantHeader || "",
         },
@@ -55,7 +55,7 @@ export const createCommentThunk = createAsyncThunk(
   'comments/create',
   async (commentData: Partial<Annotation>, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/comments`, {
+      const response = await fetch(`/api/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -81,14 +81,14 @@ export const updateCommentThunk = createAsyncThunk(
   'comments/update',
   async ({ id, commentData }: { id: string; commentData: Partial<Annotation> }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/comments/${id}`, {
+      const response = await fetch(`/api/comments`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           "x-tenant-db": tenantHeader || "",
         },
         credentials: "include",
-        body: JSON.stringify(commentData),
+        body: JSON.stringify({ ...commentData, _id: id }),
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -107,7 +107,7 @@ export const deleteCommentThunk = createAsyncThunk(
   'comments/delete',
   async (id: string, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/comments/${id}`, {
+      const response = await fetch(`/api/comments?id=${id}`, {
         method: 'DELETE',
         headers: {
           "x-tenant-db": tenantHeader || "",

@@ -42,6 +42,13 @@ import { toast } from "sonner";
 import { profile } from "console";
 import { logoutThunk } from "@/lib/store/auth/authThunks";
 import { Button } from "./ui/button";
+import AdminBar from "./AdminBar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -184,6 +191,8 @@ const Header = ({
             : "relative"
       }`}
     >
+      {/* ✅ AdminBar — topmost strip above navigation */}
+      <AdminBar />
       <header
         className={`w-full flex flex-col relative transition-colors duration-300 ${isTransparent ? "bg-transparent border-transparent" : "bg-background border-b border-border"}`}
       >
@@ -251,7 +260,7 @@ const Header = ({
         </div> */}
 
         <div
-          className={`grid grid-cols-3 items-center px-4 sm:px-[5%] xl:px-[8%] py-4 ${isTransparent ? "bg-transparent" : "bg-background"}`}
+          className={`grid grid-cols-3 items-center px-4 sm:px-[5%] xl:px-[5%] py-4 ${isTransparent ? "bg-transparent" : "bg-background"}`}
         >
           {/* Left Column: Menu & Shop */}
           <div className="flex items-center gap-6 justify-start">
@@ -425,7 +434,7 @@ const Header = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[2000] bg-black/50"
+              className="fixed inset-0 z-[50000] bg-black/50"
               onClick={() => setIsMobileMenuOpen(false)}
             />
             {/* Primary Drawer */}
@@ -434,7 +443,7 @@ const Header = ({
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="fixed left-0 top-0 z-[2001] h-full w-[min(85vw,400px)] overflow-y-auto bg-background px-8 py-8 shadow-2xl"
+              className="fixed left-0 top-0 z-[50001] h-full w-[min(85vw,400px)] overflow-y-auto bg-background px-8 py-8 shadow-2xl"
             >
               <div className="mb-6 flex items-center justify-between border-b pb-4">
                 <img
@@ -572,7 +581,7 @@ const Header = ({
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ type: "tween", duration: 0.2 }}
-                    className="fixed left-[400px] top-0 z-[2000] h-full w-[450px] overflow-y-auto bg-surface px-10 py-12 shadow-2xl border-l border-border"
+                    className="fixed left-[400px] top-0 z-[50000] h-full w-[450px] overflow-y-auto bg-surface px-10 py-12 shadow-2xl border-l border-border"
                   >
                     {(() => {
                       const activeTab = displayMenus.find(
@@ -599,7 +608,7 @@ const Header = ({
                               {col.sections?.map(
                                 (section: any, secIdx: number) => (
                                   <div key={secIdx}>
-                                    <h4 className="text-[16px] font-sans font-medium text-muted mb-4">
+                                    <h4 className="text-[12px] font-sans font-bold uppercase tracking-wider text-slate-400 mb-3">
                                       {section.heading}
                                     </h4>
                                     <ul className="space-y-3">
@@ -684,7 +693,7 @@ const SearchOverlay = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[3000] flex flex-col items-center bg-background/95 px-4 pt-24 backdrop-blur-xl sm:px-[5%] sm:pt-32"
+          className="fixed inset-0 z-[50002] flex flex-col items-center bg-background/95 px-4 pt-24 backdrop-blur-xl sm:px-[5%] sm:pt-32"
         >
           <button
             onClick={onClose}

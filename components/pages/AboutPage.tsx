@@ -48,7 +48,7 @@ const AboutPage = () => {
 
   return (
     <>
-      {nestCraftUser?.role == "admin" && <AnnotatorPlugin />}
+
       <GetAllPages />
 
       <div data-annotate-id="about-page-root" className="bg-background text-foreground">

@@ -159,7 +159,7 @@
 
   .huge-watermark {
     @apply font-heading text-foreground/5 -mt-5 pointer-events-none select-none font-medium text-center overflow-hidden;
-    font-size: clamp(72px, 18vw, 235px);
+    font-size: clamp(72px, 18vw, 222px);
     letter-spacing: -0.0em;
     line-height: 0.85;
 

@@ -19,7 +19,7 @@ const ContactPage = () => {
   return (
     <>
       {/* commentsS Plugin */}
-      {user?.role == "admin" && <AnnotatorPlugin />}
+
       {/* get all page from the database */}
       <GetAllPages />
       <div className="pb-20 bg-background">

@@ -126,7 +126,7 @@ export const AnnotatorPlugin: React.FC = () => {
   }, [isCommentModeActive, draft, setActiveAnnotationId]);
 
   const handleSaveDraft = async () => {
-    if (!draft || !draftContent.trim() || !currentPages?._id) return;
+    if (!draft || !draftContent.trim()) return;
     const data: Omit<Annotation, 'id' | 'createdAt'> = {
       selector: draft.selector,
       offsetX: draft.offsetX,
@@ -134,7 +134,7 @@ export const AnnotatorPlugin: React.FC = () => {
       content: draftContent.trim(),
       status: 'open',
       screenSize: getScreenSize(window.innerWidth),
-      pageId: currentPages._id,
+      pageId: currentPages?._id || "",
       slug: slug
     }
     addAnnotation(data);
@@ -183,99 +183,7 @@ export const AnnotatorPlugin: React.FC = () => {
         }
       `}</style>
 
-      {/* Floating Action Button & Settings */}
-      <div data-annotator-ui="true" className="fixed bottom-6 right-6 z-[10000] flex flex-col items-end gap-2">
 
-        {/* Settings Panel */}
-        {showSettings && isCommentModeActive && (
-          <div
-            className="bg-white rounded-xl shadow-2xl border border-slate-200 p-4 w-64 mb-2 origin-bottom-right animate-in fade-in slide-in-from-bottom-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
-              <Settings2 size={16} />
-              Plugin Settings
-            </h3>
-
-            <div className="space-y-3">
-              <label className="flex items-center justify-between cursor-pointer group">
-                <span className="text-sm text-slate-600 group-hover:text-slate-900 transition-colors flex items-center gap-2">
-                  {settings.showResolved ? <Eye size={14} /> : <EyeOff size={14} />}
-                  Show Resolved
-                </span>
-                <div className={`w-8 h-4 rounded-full transition-colors relative ${settings.showResolved ? 'bg-indigo-500' : 'bg-slate-300'}`}>
-                  <div className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform ${settings.showResolved ? 'translate-x-4' : 'translate-x-0'}`} />
-                </div>
-                <input
-                  type="checkbox"
-                  className="hidden"
-                  checked={settings.showResolved}
-                  onChange={(e) => updateSettings({ showResolved: e.target.checked })}
-                />
-              </label>
-
-              <label className="flex items-center justify-between cursor-pointer group" title="Highlights elements with data-annotate-id">
-                <span className="text-sm text-slate-600 group-hover:text-slate-900 transition-colors flex items-center gap-2">
-                  <ScanLine size={14} />
-                  Calibration Mode
-                </span>
-                <div className={`w-8 h-4 rounded-full transition-colors relative ${settings.calibrationMode ? 'bg-indigo-500' : 'bg-slate-300'}`}>
-                  <div className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform ${settings.calibrationMode ? 'translate-x-4' : 'translate-x-0'}`} />
-                </div>
-                <input
-                  type="checkbox"
-                  className="hidden"
-                  checked={settings.calibrationMode}
-                  onChange={(e) => updateSettings({ calibrationMode: e.target.checked })}
-                />
-              </label>
-            </div>
-          </div>
-        )}
-
-        <div className="flex items-center gap-2">
-          {isCommentModeActive && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowSettings(!showSettings);
-              }}
-              className={`p-3 rounded-full shadow-lg transition-all ${showSettings
-                  ? 'bg-slate-800 text-white'
-                  : 'bg-white text-slate-600 hover:bg-slate-50'
-                }`}
-              title="Plugin Settings"
-            >
-              <Settings2 size={20} />
-            </button>
-          )}
-
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleCommentMode();
-              setDraft(null);
-              setShowSettings(false);
-            }}
-            className={`flex items-center gap-2 px-4 py-3 rounded-full shadow-xl font-medium transition-all ${isCommentModeActive
-                ? 'bg-slate-900 text-white ring-4 ring-slate-200'
-                : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-2xl hover:-translate-y-1'
-              }`}
-          >
-            {isCommentModeActive ? (
-              <>
-                <MessageSquareOff size={20} />
-                <span>Hide Comments</span>
-              </>
-            ) : (
-              <>
-                <MessageSquare size={20} />
-                <span>Show Comments ({annotations.length})</span>
-              </>
-            )}
-          </button>
-        </div>
-      </div>
 
       {/* Only render markers and capture layer if Comment Mode is ACTIVE */}
       {isCommentModeActive && (
@@ -284,7 +192,7 @@ export const AnnotatorPlugin: React.FC = () => {
           {!draft && (
             <div
               data-annotator-ui="true"
-              className="fixed inset-0 z-[9998] cursor-crosshair"
+              className="fixed inset-x-0 bottom-0 top-[44px] z-[9998] cursor-crosshair"
               onClickCapture={handleCanvasClick}
             >
               {/* Subtle border to indicate mode is active */}
@@ -302,7 +210,7 @@ export const AnnotatorPlugin: React.FC = () => {
             <div
               data-annotator-ui="true"
               className="fixed z-[10000] -translate-x-1/2 -translate-y-1/2"
-              style={{ left: draft.x, top: draft.y }}
+              style={{ left: `${draft.x}px`, top: `${draft.y}px` }}
             >
               {/* Draft Pin (Red for 'Open' default) */}
               <div className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-red-500 rounded-full shadow-lg ring-4 ring-red-200 flex items-center justify-center text-white">

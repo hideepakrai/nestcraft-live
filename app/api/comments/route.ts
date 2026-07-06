@@ -3,11 +3,16 @@ import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 const dbName = process.env.DB_NAME;
+
+function getDbName(req: NextRequest): string {
+    return req.headers.get("x-tenant-db") || dbName || "test";
+}
+
 //get all pages
 export async function GET(req: NextRequest) {
     try {
         const client = await clientPromise;
-        const db = client.db(dbName);
+        const db = client.db(getDbName(req));
         const pages = await db.collection("comments").find({}).toArray();
         return NextResponse.json({ success: true, pages });
     } catch (error) {
@@ -20,7 +25,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
     try {
         const client = await clientPromise;
-        const db = client.db(dbName);
+        const db = client.db(getDbName(req));
         const comment = await req.json();
         const result = await db.collection("comments").insertOne(comment);
         console.log("result", result)
@@ -36,7 +41,7 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
     try {
         const client = await clientPromise;
-        const db = client.db(dbName);
+        const db = client.db(getDbName(req));
         const comment = await req.json();
         
         const { _id, ...updateData } = comment;
@@ -66,7 +71,7 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
     try {
         const client = await clientPromise;
-        const db = client.db(dbName);
+        const db = client.db(getDbName(req));
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
 

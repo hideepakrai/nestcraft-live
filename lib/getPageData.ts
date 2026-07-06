@@ -29,9 +29,15 @@ export const getPageData = cache(async (slug: string) => {
     });
 
     if (!res.ok) {
-      console.error(
-        `Failed to fetch page data for slug: ${slug}, status: ${res.status}`,
-      );
+      if (res.status !== 404) {
+        console.error(
+          `Failed to fetch page data for slug: ${slug}, status: ${res.status}`,
+        );
+      } else {
+        console.warn(
+          `Page data not found for slug: ${slug} (status: 404)`,
+        );
+      }
       return null;
     }
 
@@ -61,9 +67,15 @@ export const getSingleProduct = cache(async (id: string) => {
     });
 
     if (!res.ok) {
-      console.error(
-        `Failed to fetch product data for id: ${id}, status: ${res.status}`,
-      );
+      if (res.status !== 404) {
+        console.error(
+          `Failed to fetch product data for id: ${id}, status: ${res.status}`,
+        );
+      } else {
+        console.warn(
+          `Product data not found for id: ${id} (status: 404)`,
+        );
+      }
       return null;
     }
 

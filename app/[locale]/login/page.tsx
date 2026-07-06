@@ -37,7 +37,7 @@ export default function LoginPage() {
             : "prod";
           const redirectUri =
             environment == "dev"
-              ? "http://localhost:3001/auth/callback"
+              ? `${window.location.origin}/auth/callback`
               : "http://kalptree.xyz/auth/callback";
           const res = await fetch("/api/auth/sso/create", {
             method: "POST",
@@ -76,7 +76,8 @@ export default function LoginPage() {
         <div className="max-w-md w-full mx-auto">
           {/* Logo & Welcome */}
           <div className="mb-10 text-center lg:text-left">
-            <div className="flex items-center justify-center lg:justify-start gap-2 mb-8">
+          <a href="/" className="cursor-pointer"> 
+           <div className="flex items-center justify-center lg:justify-start gap-2 mb-8">
               <img
                 src="/assets/Image/favicon.svg"
                 alt="Nestcraft Logo"
@@ -85,7 +86,9 @@ export default function LoginPage() {
               <span className="text-2xl font-black uppercase tracking-tighter text-[#0d6533]">
                 Nestcraft
               </span>
+             
             </div>
+             </a>
             <h1 className="text-3xl font-black text-foreground mb-3 leading-tight">
               Welcome back
             </h1>

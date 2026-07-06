@@ -16,7 +16,7 @@ const EcommercePageServer = ({ data, user }: EcommercePageServerProps) => {
 
   return (
     <>
-      {user?.role === "admin" && <AnnotatorPlugin />}
+
       <GetAllPages />
 
       <div data-annotate-id="ecommerce-page-root" className="bg-background text-foreground">

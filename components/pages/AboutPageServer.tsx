@@ -24,7 +24,7 @@ const AboutPageServer = ({ data, user }: AboutPageServerProps) => {
 
   return (
     <>
-      {user?.role === "admin" && <AnnotatorPlugin />}
+
       <GetAllPages />
 
       <div data-annotate-id="about-page-root" className="bg-background text-foreground">

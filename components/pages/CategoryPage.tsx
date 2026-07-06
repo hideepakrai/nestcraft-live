@@ -405,7 +405,7 @@ const CategoryPage = () => {
   return (
     <>
       {/* Comments Plugin */}
-      {user?.role === "admin" && <AnnotatorPlugin />}
+
       {/* get all page from the database */}
       <GetAllPages />
       <div className="mx-auto px-[5%] pb-20 pt-[50px]">

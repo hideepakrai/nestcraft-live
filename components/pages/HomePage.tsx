@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { AnnotatorPlugin } from "../annotationPlugin/AnnotatorPlugin";
+
 import GetAllPages from "./GetAllPages";
 import { RootState } from "@/lib/store/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,7 +34,7 @@ const HomePage = () => {
 
   return (
     <>
-      {user?.role == "admin" && <AnnotatorPlugin />}
+
 
       <GetAllPages />
       <GetAllMenus />
