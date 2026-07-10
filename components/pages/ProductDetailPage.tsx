@@ -620,6 +620,7 @@ import { useSelector } from "react-redux";
 import { composeVariantKey } from "@/lib/admin-products/utils";
 
 const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
+  console.log("current prodict---", currentProduct)
   const { allCategories } = useSelector(
     (state: RootState) => state.adminCategories,
   );
@@ -636,11 +637,22 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
   const [activeTab, setActiveTab] = useState("overview");
   const [openAccordion, setOpenAccordion] = useState<string | null>("details");
   const [isAdded, setIsAdded] = useState(false);
-  const [selectedVariant, setSelectedVariant] = useState<any>(null);
+  const getDefaultOptions = (product: any) => {
+    const firstVariant = product?.variants?.[0];
+    if (!firstVariant) return {};
+    const options: Record<string, string> = {};
+    firstVariant.attributeValues?.forEach((av: any) => {
+      options[av.attributeId] = av.value;
+    });
+    return options;
+  };
+
+  const [selectedVariant, setSelectedVariant] = useState<any>(
+    () => currentProduct?.variants?.[0] || null
+  );
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>
-  >({});
-
+  >(() => getDefaultOptions(currentProduct));
   const dispatch = useAppDispatch();
 
   // Get primary image URL
@@ -718,14 +730,18 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
     return groups;
   }, [currentProduct]);
 
-  // Initialize selected variant and options
+  // Reset variant/options when navigating to a different product
   useEffect(() => {
-    if (currentProduct?.variants && currentProduct.variants.length > 0) {
+    if (currentProduct?.variants?.length) {
       const firstVariant = currentProduct.variants[0];
       setSelectedVariant(firstVariant);
-      setSelectedOptions(firstVariant.optionValues || {});
+      const options: Record<string, string> = {};
+      firstVariant.attributeValues?.forEach((av: any) => {
+        options[av.attributeId] = av.value;
+      });
+      setSelectedOptions(options);
     }
-  }, [currentProduct]);
+  }, [currentProduct?.id]);
 
   // Handle option selection
   const handleOptionChange = (optionKey: string, value: string) => {
@@ -734,8 +750,12 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
 
     // Find matching variant
     const matchingVariant = currentProduct?.variants?.find((variant: any) => {
+      const variantOptions: Record<string, string> = {};
+      variant.attributeValues?.forEach((av: any) => {
+        variantOptions[av.attributeId] = av.value;
+      });
       return Object.keys(newOptions).every(
-        (key) => variant.optionValues[key] === newOptions[key],
+        (key) => variantOptions[key] === newOptions[key],
       );
     });
 

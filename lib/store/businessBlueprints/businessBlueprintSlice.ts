@@ -118,7 +118,7 @@ interface BusinessBlueprintState {
 
 const initialState: BusinessBlueprintState = {
   businessBlueprint: null,
-  isLoading: true,
+  isLoading: false,
   error: null,
   hasBlueprintFetched: false,
   activeThemeMode: "admin", // NEW: Default to admin theme

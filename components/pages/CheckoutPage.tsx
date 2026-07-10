@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -252,6 +251,12 @@ const CheckoutPage = () => {
     shipping: {
       method: "standard",
     },
+    statusHistory: [
+      {
+        status: "pending",
+        timestamp: null,
+      },
+    ],
   });
 
   const handlePlaceOrder = async () => {
@@ -274,11 +279,18 @@ const CheckoutPage = () => {
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to create order. Please try again.");
+      let data: any;
+      try {
+        data = await res.json();
+      } catch {
+        data = {};
       }
 
-      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(
+          data?.detail || "Failed to create order. Please try again."
+        );
+      }
 
       // 2. COD: we're done — no gateway, no verification.
       if (isCOD) {

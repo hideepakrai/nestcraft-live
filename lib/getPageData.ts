@@ -112,6 +112,7 @@ export const getBusinessBlueprint = cache(async () => {
     });
     const json = await response.json();
     const data = json.data !== undefined ? json.data : json;
+    console.log("get blueprint--->", data);
     return serialize(data);
   } catch (error) {
     console.error("Error fetching business blueprint:", error);
