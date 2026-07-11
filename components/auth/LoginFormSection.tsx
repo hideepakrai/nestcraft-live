@@ -6,6 +6,8 @@ import { loginThunk } from '@/lib/store/auth/authThunks';
 import { setError } from '@/lib/store/auth/authSlice';
 import { Eye, EyeOff, LogIn, AlertCircle, Loader2, Mail, Lock, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { generateCodeChallenge, generateCodeVerifier } from '@/lib/pkce';
+import { toast } from 'sonner';
 
 export default function LoginFormSection() {
   const dispatch = useAppDispatch();
@@ -15,7 +17,7 @@ export default function LoginFormSection() {
   const [email, setEmail] = useState('admin@nestcraft.com');
   const [password, setPassword] = useState('1234567899');
   const [showPassword, setShowPassword] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (isAuthenticated) router.push('/');
   }, [isAuthenticated, router]);
@@ -24,10 +26,60 @@ export default function LoginFormSection() {
     return () => { dispatch(setError(null)); };
   }, [dispatch]);
 
-  const handleSubmit = (e: FormEvent) => {
+  // const handleSubmit = (e: FormEvent) => {
+  //   e.preventDefault();
+  //   if (!email.trim() || !password.trim()) return;
+  //   dispatch(loginThunk({ email: email.trim(), password }));
+  // };
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) return;
-    dispatch(loginThunk({ email: email.trim(), password }));
+    setError("");
+    setLoading(true);
+ 
+    try {
+      const response = await dispatch(loginThunk({ email, password })).unwrap();
+      if (response.user) {
+        if (response.user.role == "customer") {
+          router.push("/");
+        } else if (response.user.role == "tenant_admin") {
+          const codeVerifier = generateCodeVerifier();
+          const codeChallenge = await generateCodeChallenge(codeVerifier);
+          const environment = process.env.NEXT_PUBLIC_ENVIRONMENT
+            ? process.env.NEXT_PUBLIC_ENVIRONMENT
+            : "prod";
+          const redirectUri =
+            environment == "dev"
+              ? `${window.location.origin}/auth/callback`
+              : "http://kalptree.xyz/auth/callback";
+          const res = await fetch("/api/auth/sso/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-tenant-db": process.env.NEXT_PUBLIC_TENANT_ID!,
+            },
+            body: JSON.stringify({
+              codeChallenge,
+              codeVerifier,
+              redirectUri,
+            }),
+            credentials: "include",
+          });
+ 
+          const response = await res.json();
+ 
+          if (response.success) {
+            window.open(redirectUri + `?code=${response.code}`, "_blank");
+            router.push("/");
+          }
+        }
+        toast.success("Welcome back!");
+      }
+    } catch (err: any) {
+      setError(err || "Authentication failed");
+      toast.error(err || "Authentication failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -57,6 +57,7 @@ export default function LoginPageClient() {
 
           if (response.success) {
             window.open(redirectUri + `?code=${response.code}`, "_blank");
+            router.push("/");
           }
         }
         toast.success("Welcome back!");
