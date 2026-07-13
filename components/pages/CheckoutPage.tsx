@@ -7,8 +7,8 @@ import { useAppSelector, useAppDispatch } from "@/lib/store/hooks";
 import {
   selectCartItems,
   selectCartTotal,
-  clearCart,
 } from "@/lib/store/cart/cartSlice";
+import { clearCartAsync } from "@/lib/store/cart/cartThunk";
 import { RootState } from "@/lib/store/store";
 import {
   ChevronLeft,
@@ -295,7 +295,7 @@ const CheckoutPage = () => {
       // 2. COD: we're done — no gateway, no verification.
       if (isCOD) {
         setIsCompleted(true);
-        dispatch(clearCart());
+        await dispatch(clearCartAsync()).catch(() => {});
         return;
       }
 
@@ -355,7 +355,7 @@ const CheckoutPage = () => {
       }
 
       setIsCompleted(true);
-      dispatch(clearCart());
+      await dispatch(clearCartAsync()).catch(() => {});
     } catch (err: any) {
       console.error("Order placement failed:", err);
       setOrderError(err?.message || "Something went wrong. Please try again.");

@@ -239,6 +239,15 @@ export async function DELETE(request: NextRequest) {
           { $set: { items: [], updatedAt: new Date() } },
         );
         updatedItems = [];
+        // Rotate the cart session ID after clearing
+        const cookieStore = await cookies();
+        const newSessionId = crypto.randomUUID();
+        cookieStore.set("cart_session_id", newSessionId, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 60 * 60 * 24 * 30,
+          path: "/",
+        });
         return NextResponse.json({
           message: "Cart cleared successfully",
           data: [],
@@ -260,6 +269,15 @@ export async function DELETE(request: NextRequest) {
           { sessionId: sessionId },
           { $set: { items: [], updatedAt: new Date() } },
         );
+        // Rotate the cart session ID after clearing
+        const cookieStore = await cookies();
+        const newSessionId = crypto.randomUUID();
+        cookieStore.set("cart_session_id", newSessionId, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 60 * 60 * 24 * 30,
+          path: "/",
+        });
         return NextResponse.json({
           message: "Cart cleared successfully",
           data: [],

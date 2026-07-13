@@ -47,5 +47,21 @@ async function handleProxy(req: NextRequest, context: { params: Promise<{ slug?:
     targetPath = "form-data"; 
   }
 
-  return proxyRequest(req, targetPath, { addApiPrefix });
+  const response = await proxyRequest(req, targetPath, { addApiPrefix });
+
+  // Rotate cart_session_id cookie after successfully clearing the cart
+  if (
+    req.method === "DELETE" &&
+    slug.length >= 2 &&
+    slug[0] === "commerce" &&
+    slug[1] === "cart" &&
+    req.nextUrl.searchParams.get("clear") === "true"
+  ) {
+    response.headers.append(
+      "Set-Cookie",
+      `cart_session_id=${crypto.randomUUID()}; HttpOnly; ${process.env.NODE_ENV === "production" ? "Secure; " : ""}Max-Age=${60 * 60 * 24 * 30}; Path=/`,
+    );
+  }
+
+  return response;
 }
