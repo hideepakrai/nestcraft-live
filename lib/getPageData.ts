@@ -1,7 +1,6 @@
 import { cache } from "react";
 import { connectTenantDB } from "./db";
 import { ObjectId } from "mongodb";
-import { isHex } from "@/app/api/ecommerce/categories/util";
 
 function serialize(obj: any): any {
   if (obj === null || obj === undefined) return null;
@@ -17,7 +16,7 @@ function serialize(obj: any): any {
 
 export const getPageData = cache(async (slug: string) => {
   const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || "";
-  const API_URL = process.env.OWN_URL;
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   try {
     const res = await fetch(`${API_URL}/api/cms/pages?slug=${slug}`, {
       method: "GET",
@@ -53,7 +52,7 @@ export const getPageData = cache(async (slug: string) => {
 });
 
 export const getSingleProduct = cache(async (id: string) => {
-  const API_URL = process.env.OWN_URL || "http://localhost:3000";
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
   const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || "kp_nestcraft";
 
   try {
@@ -99,7 +98,7 @@ export const getTenantRegistry = cache(async () => {
 });
 
 export const getBusinessBlueprint = cache(async () => {
-  const API_URL = process.env.OWN_URL;
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const tenantId = process.env.NEXT_PUBLIC_TENANT_ID;
 
   try {

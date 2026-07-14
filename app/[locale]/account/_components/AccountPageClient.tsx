@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import {
   MapPin,
   Plus,
@@ -22,7 +23,28 @@ import { AddInProfile, Address } from "@/lib/store/auth/authSlice";
 import { updateProfileThunk } from "@/lib/store/auth/authThunks";
 
 export default function AccountPageClient() {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const router = useRouter();
+  const { user, isAuthenticated, isLoading } = useSelector(
+    (state: RootState) => state.auth,
+  );
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/login");
+    }
+  }, [isAuthenticated, isLoading, router]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <div className="h-10 w-10 border-4 border-secondary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   // State management
   const [activeTab, setActiveTab] = useState<

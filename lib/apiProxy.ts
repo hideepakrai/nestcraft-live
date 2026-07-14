@@ -3,8 +3,9 @@
 
 import { NextRequest, NextResponse } from "next/server";
 
-const FASTAPI_URL = process.env.FASTAPI_URL || "http://127.0.0.1:8000";
-const TENANT_DB_NAME = process.env.TENANT_DB_NAME;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:3000";
+const FASTAPI_URL = `${API_BASE_URL}/api`;
+const TENANT_DB_NAME = process.env.NEXT_PUBLIC_TENANT_ID;
 
 export async function proxyRequest(
   req: NextRequest,
@@ -146,8 +147,9 @@ export async function proxyRequest(
 
 // import { NextRequest, NextResponse } from "next/server";
 
-// const FASTAPI_URL = process.env.FASTAPI_URL || "http://127.0.0.1:8000";
-// const TENANT_DB_NAME = process.env.TENANT_DB_NAME;
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:3000";
+// const FASTAPI_URL = `${API_BASE_URL}/api`;
+// const TENANT_DB_NAME = process.env.NEXT_PUBLIC_TENANT_ID;
 
 // export async function proxyRequest(
 //   req: NextRequest,

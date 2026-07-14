@@ -6,7 +6,7 @@ function serialize(obj: any) {
 }
 
 export const getAuthUser = cache(async (token: string) => {
-  const API_URL = process.env.OWN_URL;
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const tenantId = process.env.NEXT_PUBLIC_TENANT_ID;
 
   try {

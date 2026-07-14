@@ -1,6 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { WebsiteDetailData, WebsiteDetailResponse } from './websiteDetailType';
-const FASTAPI_URL = process.env.FASTAPI_URL ;
 export const fetchWebsiteDetailThunk = createAsyncThunk(
   'websiteDetail/fetch',
   async (_, { rejectWithValue }) => {

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-const tenantHeader = process.env.TENANT_DB_NAME;
+const tenantHeader = process.env.NEXT_PUBLIC_TENANT_ID;
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const loginThunk = createAsyncThunk(

@@ -13,7 +13,7 @@ if (
   ).replace("mongodb+srv://", "mongodb://");
 }
 
-const TENANT_DB_NAME = process.env.TENANT_DB_NAME;
+const TENANT_DB_NAME = process.env.NEXT_PUBLIC_TENANT_ID;
 
 if (!MONGODB_URI) {
   throw new Error(
