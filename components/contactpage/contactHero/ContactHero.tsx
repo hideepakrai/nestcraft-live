@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useAppSelector } from "@/lib/store/hooks";
 import { defaultContactHeroData } from "./contactHeroData";
+import EditableText from "@/components/shared/EditableText";
 
 const ContactHero = ({ section }: { section?: any }) => {
   const pathname = usePathname();
@@ -68,31 +69,77 @@ const ContactHero = ({ section }: { section?: any }) => {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <p className="text-secondary uppercase tracking-[6px] text-[11px] font-black mb-6">
-              {subtitle}
+              <EditableText
+                value={subtitle}
+                currentPages={currentPages}
+                sectionId={currentSection?.id}
+                fieldPath="props.subtitle"
+              />
             </p>
             <h1 className="text-[64px] lg:text-[92px] font-black leading-[0.9] tracking-tighter mb-8">
-              {headingLine1} <br />{" "}
+              <EditableText
+                value={headingLine1}
+                currentPages={currentPages}
+                sectionId={currentSection?.id}
+                fieldPath="props.headingLine1"
+              />{" "}
+              <br />{" "}
               <span className="text-secondary italic font-serif font-normal">
-                {headingLine2}
+                <EditableText
+                  value={headingLine2}
+                  currentPages={currentPages}
+                  sectionId={currentSection?.id}
+                  fieldPath="props.headingLine2"
+                />
               </span>
             </h1>
             <p className="text-xl text-muted font-semibold max-w-[500px] leading-relaxed">
-              {description}
+              <EditableText
+                value={description}
+                currentPages={currentPages}
+                sectionId={currentSection?.id}
+                fieldPath="props.description"
+                tag="p"
+              />
             </p>
 
             <div className="mt-12 flex gap-8">
               <div className="flex flex-col">
                 <span className="text-[10px] font-black uppercase tracking-[2px] text-muted mb-2">
-                  {showroomLabel}
+                  <EditableText
+                    value={showroomLabel}
+                    currentPages={currentPages}
+                    sectionId={currentSection?.id}
+                    fieldPath="props.showroomLabel"
+                  />
                 </span>
-                <span className="font-bold text-lg">{showroomLocation}</span>
+                <span className="font-bold text-lg">
+                  <EditableText
+                    value={showroomLocation}
+                    currentPages={currentPages}
+                    sectionId={currentSection?.id}
+                    fieldPath="props.showroomLocation"
+                  />
+                </span>
               </div>
               <div className="w-px h-12 bg-border" />
               <div className="flex flex-col">
                 <span className="text-[10px] font-black uppercase tracking-[2px] text-muted mb-2">
-                  {supportLabel}
+                  <EditableText
+                    value={supportLabel}
+                    currentPages={currentPages}
+                    sectionId={currentSection?.id}
+                    fieldPath="props.supportLabel"
+                  />
                 </span>
-                <span className="font-bold text-lg">{supportHours}</span>
+                <span className="font-bold text-lg">
+                  <EditableText
+                    value={supportHours}
+                    currentPages={currentPages}
+                    sectionId={currentSection?.id}
+                    fieldPath="props.supportHours"
+                  />
+                </span>
               </div>
             </div>
           </motion.div>
@@ -110,8 +157,25 @@ const ContactHero = ({ section }: { section?: any }) => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-secondary rounded-full flex items-center justify-center text-white p-8 text-center leading-tight font-black uppercase tracking-widest text-xs shadow-2xl animate-pulse">
-              {badgeLine1} <br /> {badgeLine2} <br /> {badgeLine3}
+            <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-secondary rounded-full flex flex-col items-center justify-center text-white p-8 text-center leading-tight font-black uppercase tracking-widest text-xs shadow-2xl animate-pulse">
+              <EditableText
+                value={badgeLine1}
+                currentPages={currentPages}
+                sectionId={currentSection?.id}
+                fieldPath="props.badgeLine1"
+              />
+              <EditableText
+                value={badgeLine2}
+                currentPages={currentPages}
+                sectionId={currentSection?.id}
+                fieldPath="props.badgeLine2"
+              />
+              <EditableText
+                value={badgeLine3}
+                currentPages={currentPages}
+                sectionId={currentSection?.id}
+                fieldPath="props.badgeLine3"
+              />
             </div>
           </motion.div>
         </div>

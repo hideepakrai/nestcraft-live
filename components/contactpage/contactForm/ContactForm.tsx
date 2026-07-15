@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { defaultContactFormData } from "./contactFormData";
 import { useAppSelector } from "@/lib/store/hooks";
+import EditableText from "@/components/shared/EditableText";
 
 const iconMap: Record<string, any> = {
   Mail,
@@ -245,7 +246,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({ data }) => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl font-black mb-10 tracking-tight">
-              {contactHeading}
+              <EditableText
+                value={contactHeading}
+                currentPages={currentPages}
+                sectionId={contactInfoSection?.id}
+                fieldPath="props.sectionHeading"
+              />
             </h2>
             <div className="space-y-12">
               {contactItems?.map((item: any, index: number) => {
@@ -257,7 +263,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({ data }) => {
                         <IconComponent size={18} />
                       </div>
                       <span className="text-[11px] font-black uppercase tracking-[2px] text-muted">
-                        {getLocalizedValue(item.label)}
+                        <EditableText
+                          value={getLocalizedValue(item.label)}
+                          currentPages={currentPages}
+                          sectionId={contactInfoSection?.id}
+                          fieldPath={`content.${index}.props.label`}
+                        />
                       </span>
                     </div>
                     {item.href ? (
@@ -265,11 +276,21 @@ export const ContactForm: React.FC<ContactFormProps> = ({ data }) => {
                         href={item.href}
                         className="text-2xl font-bold tracking-tight inline-block"
                       >
-                        {getLocalizedValue(item.value)}
+                        <EditableText
+                          value={getLocalizedValue(item.value)}
+                          currentPages={currentPages}
+                          sectionId={contactInfoSection?.id}
+                          fieldPath={`content.${index}.props.value`}
+                        />
                       </a>
                     ) : (
                       <p className="text-2xl font-bold tracking-tight">
-                        {getLocalizedValue(item.value)}
+                        <EditableText
+                          value={getLocalizedValue(item.value)}
+                          currentPages={currentPages}
+                          sectionId={contactInfoSection?.id}
+                          fieldPath={`content.${index}.props.value`}
+                        />
                       </p>
                     )}
                     <div className="w-0 group-hover:w-full h-px bg-secondary transition-all duration-500 mt-2" />
@@ -296,25 +317,54 @@ export const ContactForm: React.FC<ContactFormProps> = ({ data }) => {
                   <CheckCircle2 size={48} />
                 </div>
                 <h3 className="text-4xl font-black mb-4 tracking-tight">
-                  {successHeading}
+                  <EditableText
+                    value={successHeading}
+                    currentPages={currentPages}
+                    sectionId={formSection?.id}
+                    fieldPath="props.successHeading"
+                  />
                 </h3>
                 <p className="text-muted font-semibold mb-10 text-lg">
-                  {successDescription}
+                  <EditableText
+                    value={successDescription}
+                    currentPages={currentPages}
+                    sectionId={formSection?.id}
+                    fieldPath="props.successDescription"
+                    tag="p"
+                  />
                 </p>
                 <button
                   onClick={() => setIsSubmitted(false)}
                   className="bg-primary text-white px-12 h-14 rounded-full text-[15px] font-bold uppercase tracking-wider hover:bg-primary/90 transition-all cursor-pointer"
                 >
-                  {successButtonText}
+                  <EditableText
+                    value={successButtonText}
+                    currentPages={currentPages}
+                    sectionId={formSection?.id}
+                    fieldPath="props.successButtonText"
+                  />
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-10">
                 <div className="space-y-2">
                   <h3 className="text-3xl font-black tracking-tight mb-2">
-                    {formHeading}
+                    <EditableText
+                      value={formHeading}
+                      currentPages={currentPages}
+                      sectionId={formSection?.id}
+                      fieldPath="props.formHeading"
+                    />
                   </h3>
-                  <p className="text-muted font-semibold">{formDescription}</p>
+                  <p className="text-muted font-semibold">
+                    <EditableText
+                      value={formDescription}
+                      currentPages={currentPages}
+                      sectionId={formSection?.id}
+                      fieldPath="props.formDescription"
+                      tag="p"
+                    />
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-10">
@@ -385,10 +435,10 @@ export const ContactForm: React.FC<ContactFormProps> = ({ data }) => {
                               name={fieldKey}
                               checked={!!formData[fieldKey]}
                               onChange={(e) => {
-                                setFormData({
-                                  ...formData,
-                                  [fieldKey]: e.target.checked,
-                                });
+                                  setFormData({
+                                    ...formData,
+                                    [fieldKey]: e.target.checked,
+                                  });
                               }}
                               className="w-5 h-5 rounded border-border text-primary focus:ring-secondary cursor-pointer"
                               id={field.id}
@@ -424,7 +474,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({ data }) => {
                 >
                   <div className="absolute inset-0 bg-secondary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                   <span className="relative z-10 flex gap-2 items-center">
-                    {submitButtonText}
+                    <EditableText
+                      value={submitButtonText}
+                      currentPages={currentPages}
+                      sectionId={formSection?.id}
+                      fieldPath="props.submitButtonText"
+                    />
                     <ArrowRight
                       size={20}
                       className="group-hover:translate-x-2 transition-transform"

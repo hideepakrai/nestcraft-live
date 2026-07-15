@@ -15,6 +15,9 @@ import {
   ArrowRight,
   ShoppingBag,
   ChevronLeft,
+  MessageCircleQuestion,
+  ShieldCheck,
+  CheckCircle2,
 } from "lucide-react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
@@ -253,6 +256,81 @@ const CartPage = () => {
             Secure SSL Encrypted Checkout
           </p>
         </motion.div>
+      </div>
+
+      {/* Features Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 pt-16 border-t border-border/40">
+        <div className="bg-[#f6f6f6] rounded-2xl p-8 flex flex-col items-center text-center">
+          <MessageCircleQuestion size={24} className="mb-4 text-foreground/80" strokeWidth={1.75} />
+          <h3 className="font-bold font-sans text-[16px] mb-2">Have Questions?</h3>
+          <p className="text-muted text-[14px] font-medium leading-relaxed px-4">
+            Our experts are here to help! Call us free.
+          </p>
+        </div>
+        <div className="bg-[#f6f6f6] rounded-2xl p-8 flex flex-col items-center text-center">
+          <ShieldCheck size={24} className="mb-4 text-foreground/80" strokeWidth={1.75} />
+          <h3 className="font-bold font-sans text-[16px] mb-2">Secure Shopping</h3>
+          <p className="text-muted text-[14px] font-medium leading-relaxed px-4">
+            All transactions are protected by SSL technology.
+          </p>
+        </div>
+        <div className="bg-[#f6f6f6] rounded-2xl p-8 flex flex-col items-center text-center">
+          <CheckCircle2 size={24} className="mb-4 text-foreground/80" strokeWidth={1.75} />
+          <h3 className="font-bold font-sans text-[16px] mb-2">Privacy Protection</h3>
+          <p className="text-muted text-[14px] font-medium leading-relaxed px-4">
+            Your privacy is always our top priority.
+          </p>
+        </div>
+      </div>
+
+      {/* You may also like... */}
+      <div className="mt-20">
+        <h2 className="text-[22px] font-bold mb-8">You may also like...</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          {/* Related Product 1 */}
+          <div className="border border-border/40 rounded-2xl p-6 flex items-center gap-8 hover:border-black/20 transition-colors">
+            <div className="w-32 h-40 bg-[#e8e4e0] rounded-xl overflow-hidden shrink-0 flex items-center justify-center">
+              <img src="/assets/Image/Sofa.jpg" alt="Premium Cotton TShirt" className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h3 className="font-bold text-lg mb-2 tracking-tight">PREMIUM COTTON TSHIRT</h3>
+              <div className="flex gap-2 items-center mb-6">
+                <span className="text-red-600 font-bold">Rs. 599.00</span>
+                <span className="text-muted line-through text-sm">Rs. 999.00</span>
+              </div>
+              <Link href="/shop" className="text-sm font-bold border-b-2 border-black pb-1 hover:text-muted hover:border-muted transition-colors">
+                Select Options
+              </Link>
+            </div>
+          </div>
+
+          {/* Related Product 2 */}
+          <div className="border border-border/40 rounded-2xl p-6 flex items-center gap-8 hover:border-black/20 transition-colors">
+            <div className="w-32 h-40 bg-[#f6f6f6] rounded-xl overflow-hidden shrink-0 flex items-center justify-center">
+              <img src="/assets/Image/Sofa.jpg" alt="Black Panther Hoodie" className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h3 className="font-bold text-lg mb-2 tracking-tight">Black Panther Hoodie</h3>
+              <div className="flex gap-2 items-center mb-6">
+                <span className="text-red-600 font-bold">Rs. 1,599.00</span>
+                <span className="text-muted line-through text-sm">Rs. 2,599.00</span>
+              </div>
+              <Link href="/shop" className="text-sm font-bold border-b-2 border-black pb-1 hover:text-muted hover:border-muted transition-colors">
+                Select Options
+              </Link>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Dummy Pagination Dots */}
+        <div className="flex items-center justify-center gap-2 mt-8">
+          <div className="w-1.5 h-1.5 rounded-full bg-border"></div>
+          <div className="w-2 h-2 rounded-full bg-black"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-border"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-border"></div>
+        </div>
       </div>
     </div>
   );

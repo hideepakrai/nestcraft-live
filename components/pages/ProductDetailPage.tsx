@@ -612,12 +612,21 @@ import {
   RotateCcw,
   Info,
   Check,
+  Share2,
+  HelpCircle,
+  Eye,
+  Flame,
+  X,
+  Copy,
+  Facebook,
+  Twitter,
 } from "lucide-react";
 import { useAppDispatch } from "../../lib/store/hooks";
 import { addToCartAsync } from "../../lib/store/cart/cartThunk";
 import { RootState } from "@/lib/store/store";
 import { useSelector } from "react-redux";
 import { composeVariantKey } from "@/lib/admin-products/utils";
+import CartSidebar from "../ecommerce/CartSidebar";
 
 const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
   console.log("current prodict---", currentProduct)
@@ -654,6 +663,21 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
     Record<string, string>
   >(() => getDefaultOptions(currentProduct));
   const dispatch = useAppDispatch();
+
+  const [soldCount, setSoldCount] = useState(12);
+  const [soldHours, setSoldHours] = useState(18);
+  const [viewingCount, setViewingCount] = useState(15);
+  const [isAskQuestionOpen, setIsAskQuestionOpen] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
+  const [leftInStock, setLeftInStock] = useState(10);
+
+  useEffect(() => {
+    setSoldCount(Math.floor(Math.random() * 30) + 5);
+    setSoldHours(Math.floor(Math.random() * 24) + 1);
+    setViewingCount(Math.floor(Math.random() * 40) + 10);
+    setLeftInStock(Math.floor(Math.random() * 12) + 3);
+  }, []);
 
   // Get primary image URL
   const primaryImage = useMemo(() => {
@@ -851,6 +875,7 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
     };
     dispatch(addToCartAsync(productToAdd));
     setIsAdded(true);
+    setIsCartSidebarOpen(true);
     setTimeout(() => setIsAdded(false), 2000);
   };
 
@@ -874,11 +899,6 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
         {/* LEFT: GALLERY */}
         <div className="space-y-4">
           <div className="relative aspect-[4/5] rounded-[32px] overflow-hidden border border-border bg-muted/5">
-            {discountPercentage && (
-              <div className="badge absolute top-6 left-6 z-10 dark:bg-surface/62 dark:border-secondary/18">
-                {discountPercentage}% OFF
-              </div>
-            )}
             <img
               src={galleryImages[selectedImage] || primaryImage}
               alt={currentProduct.name}
@@ -912,9 +932,18 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
                 <small className="text-secondary tracking-[3px] uppercase text-[10px] font-black mb-2 block">
                   {primaryCategory}
                 </small>
-                <h1 className="text-[48px] font-black leading-[1.05] tracking-tight">
+                {discountPercentage && (
+                  <div className="inline-block bg-red-500/90 text-white px-4 py-1.5 rounded-full text-sm font-bold mb-4 shadow-sm">
+                    -{discountPercentage}%
+                  </div>
+                )}
+                <h1 className="text-[32px] font-black leading-[1.05] tracking-tight">
                   {currentProduct.name}
                 </h1>
+                <div className="mt-4 inline-flex items-center gap-2 text-red-500 text-sm font-bold">
+                  <Flame size={16} />
+                  {soldCount} sold in last {soldHours} hours
+                </div>
               </div>
               <button className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-muted/10 transition-all shrink-0">
                 <Heart size={20} />
@@ -939,6 +968,17 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
               </div>
             </div>
 
+            <div className="text-[15px] font-bold text-foreground">
+              Customer Care: +916395463874
+            </div>
+
+            <div className="inline-flex items-center gap-3 mt-4 text-sm font-bold text-foreground">
+              <div className="bg-black text-white p-1.5 rounded flex items-center justify-center">
+                <Eye size={14} />
+              </div>
+              {viewingCount} peoples are viewing this right now
+            </div>
+
             {currentProduct.sku && (
               <div className="text-[11px] font-black uppercase tracking-[1px] text-muted">
                 SKU: {selectedVariant?.sku || currentProduct.sku}
@@ -946,7 +986,7 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
             )}
           </div>
 
-          <p className="text-muted font-bold leading-relaxed text-[15px]">
+          <p className="text-muted font-medium leading-relaxed text-[15px]">
             {currentProduct.description}
           </p>
 
@@ -979,6 +1019,29 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
           )}
 
           {/* Actions */}
+          {/* Compare, Ask, Share */}
+          <div className="flex items-center gap-4 py-2 flex-wrap">
+        
+            <button
+              onClick={() => setIsAskQuestionOpen(true)}
+              className="flex items-center gap-2 text-sm font-bold text-muted hover:text-foreground transition-colors"
+            >
+              <HelpCircle size={16} /> Ask a question
+            </button>
+            <button
+              onClick={() => setIsShareOpen(true)}
+              className="flex items-center gap-2 text-sm font-bold text-muted hover:text-foreground transition-colors"
+            >
+              <Share2 size={16} /> Share
+            </button>
+          </div>
+
+          {/* Hurry up */}
+          <div className="flex items-center gap-2 text-[15px] font-bold text-foreground mb-4">
+            <Flame size={18} className="text-orange-500" />
+            Hurry up! Only <span className="text-red-500">{leftInStock} item(s)</span> items left in stock
+          </div>
+
           <div className="flex gap-4">
             <div className="flex items-center h-14 rounded-full border border-border bg-surface px-2">
               <button
@@ -1071,7 +1134,7 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
                       exit={{ height: 0, opacity: 0 }}
                       className="overflow-hidden"
                     >
-                      <div className="p-[0_20px_20px_52px] text-[14px] text-muted font-bold leading-relaxed">
+                      <div className="p-[0_20px_20px_52px] text-[14px] text-muted font-medium leading-relaxed">
                         {item.content}
                       </div>
                     </motion.div>
@@ -1254,6 +1317,91 @@ const ProductDetailPage = ({ currentProduct }: { currentProduct: any }) => {
           {/* Add related products grid here */}
         </section>
       )}
+
+      {/* Ask Question Modal */}
+      <AnimatePresence>
+        {isAskQuestionOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative w-full max-w-lg p-6 bg-surface rounded-2xl shadow-xl"
+            >
+              <button
+                onClick={() => setIsAskQuestionOpen(false)}
+                className="absolute top-4 right-4 p-2 text-muted hover:text-foreground"
+              >
+                <X size={20} />
+              </button>
+              <h3 className="text-xl font-black mb-6">Ask a Question</h3>
+              <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setIsAskQuestionOpen(false); }}>
+                <div className="grid grid-cols-2 gap-4">
+                  <input type="text" placeholder="Your name*" required className="w-full px-4 py-3 rounded-xl border border-border bg-transparent outline-none focus:border-secondary" />
+                  <input type="text" placeholder="Your phone number" className="w-full px-4 py-3 rounded-xl border border-border bg-transparent outline-none focus:border-secondary" />
+                </div>
+                <input type="email" placeholder="Your email*" required className="w-full px-4 py-3 rounded-xl border border-border bg-transparent outline-none focus:border-secondary" />
+                <textarea placeholder="Your message*" required rows={4} className="w-full px-4 py-3 rounded-xl border border-border bg-transparent outline-none focus:border-secondary resize-none"></textarea>
+                <p className="text-sm text-muted">* Required fields cannot be left blank.</p>
+                <button type="submit" className="w-full py-4 rounded-xl bg-black text-white font-black hover:bg-black/90 transition-colors">
+                  Send Your Message
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Share Modal */}
+      <AnimatePresence>
+        {isShareOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative w-full max-w-sm p-6 bg-surface rounded-2xl shadow-xl"
+            >
+              <button
+                onClick={() => setIsShareOpen(false)}
+                className="absolute top-4 right-4 p-2 text-muted hover:text-foreground"
+              >
+                <X size={20} />
+              </button>
+              <h3 className="text-xl font-black mb-6">Copy Link</h3>
+              
+              <div className="flex gap-2 mb-6">
+                <input type="text" readOnly value={typeof window !== 'undefined' ? window.location.href : ''} className="flex-1 px-4 py-3 rounded-xl border border-border bg-transparent outline-none text-muted" />
+                <button 
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                  }}
+                  className="w-12 h-12 flex items-center justify-center rounded-xl bg-black text-white hover:bg-black/90 transition-colors"
+                >
+                  <Copy size={18} />
+                </button>
+              </div>
+
+              <div>
+                <p className="font-bold mb-3">Share:</p>
+                <div className="flex gap-3">
+                  <button className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:border-black transition-colors">
+                    <Facebook size={18} />
+                  </button>
+                  <button className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:border-black transition-colors">
+                    <Twitter size={18} />
+                  </button>
+                  <button className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:border-black transition-colors">
+                    <Share2 size={18} />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <CartSidebar isOpen={isCartSidebarOpen} onClose={() => setIsCartSidebarOpen(false)} />
     </div>
   );
 };

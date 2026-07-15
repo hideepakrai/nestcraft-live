@@ -15,7 +15,7 @@ export async function saveField(dispatch: any, currentPages: any, sectionId: str
 
   dispatch(setCurrentPages(updated));
 
-  const pageId =  currentPages.id;
+  const pageId = currentPages._id || currentPages.id;
   if (pageId) {
     dispatch(updatePageThunk({ id: pageId, pageData: updated }));
   }

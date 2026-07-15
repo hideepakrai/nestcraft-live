@@ -168,4 +168,12 @@ export const selectCartTotal = (state: { cart: CartState }) =>
     }
   }, 0);
 
+export {
+  fetchCart,
+  addToCartAsync,
+  updateQuantityAsync,
+  removeFromCartAsync,
+  clearCartAsync,
+};
+
 export default cartSlice.reducer;
