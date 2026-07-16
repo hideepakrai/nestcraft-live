@@ -54,22 +54,29 @@ export default function AdminBar() {
       style={{ backgroundColor: "#063A1D" }}
       className="w-full text-white text-[13px] font-sans border-b border-white/10 relative z-[9999] select-none"
     >
-      <div className="w-full px-4 h-11 flex items-center justify-between">
+      <div 
+        className="w-full px-2 sm:px-4 h-11 flex items-center justify-between gap-4 overflow-x-auto whitespace-nowrap"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        <style dangerouslySetInnerHTML={{ __html: `
+          .admin-bar-scroll::-webkit-scrollbar { display: none; }
+        ` }} />
 
         {/* Left — Dashboard link */}
-        <div className="flex items-center">
+        <div className="flex items-center shrink-0 admin-bar-scroll">
           <Link
             href="/kalpauth"
             target="_blank"
             className="flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-200 font-bold uppercase tracking-wider text-[11px]"
           >
-            <LayoutDashboard className="w-3.5 h-3.5" style={{ color: "#98c45f" }} />
-            <span>ADMIN DASHBOARD</span>
+            <LayoutDashboard className="w-3.5 h-3.5 shrink-0" style={{ color: "#98c45f" }} />
+            <span className="hidden sm:inline">ADMIN DASHBOARD</span>
+            <span className="sm:hidden">ADMIN</span>
           </Link>
         </div>
 
         {/* Right — Controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
 
           {/* Comments toggle */}
           <button
@@ -79,10 +86,11 @@ export default function AdminBar() {
                 ? { borderColor: "#98c45f", color: "#98c45f", backgroundColor: "rgba(152,196,95,0.1)" }
                 : { borderColor: "rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.7)", backgroundColor: "rgba(255,255,255,0.05)" }
             }
-            className="h-7 px-3 rounded-full flex items-center gap-2 transition-all border text-[11px] font-semibold hover:opacity-90"
+            className="h-7 px-2 sm:px-3 rounded-full flex items-center gap-1.5 sm:gap-2 transition-all border text-[11px] font-semibold hover:opacity-90 shrink-0"
           >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span>{isCommentModeActive ? "Hide Comments" : `Show Comments (${commentCount})`}</span>
+            <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+            <span className="hidden md:inline">{isCommentModeActive ? "Hide Comments" : `Show Comments (${commentCount})`}</span>
+            <span className="md:hidden">{commentCount}</span>
           </button>
 
           {/* ✅ Edit Mode — connected to real Redux state (same as the floating EditModeToggle) */}
@@ -93,11 +101,12 @@ export default function AdminBar() {
                 ? { backgroundColor: "#98c45f", borderColor: "#98c45f", color: "#063A1D", boxShadow: "0 0 12px rgba(152,196,95,0.45)" }
                 : { borderColor: "rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.7)", backgroundColor: "rgba(255,255,255,0.05)" }
             }
-            className="h-7 px-3 rounded-full flex items-center gap-1.5 transition-all text-[11px] font-semibold border hover:opacity-90"
+            className="h-7 px-2 sm:px-3 rounded-full flex items-center gap-1.5 transition-all text-[11px] font-semibold border hover:opacity-90 shrink-0"
             title={isEditable ? "Disable edit mode" : "Enable edit mode"}
           >
-            <Edit3 className="w-3.5 h-3.5" />
-            <span>Edit Mode {isEditable ? "ON" : "OFF"}</span>
+            <Edit3 className="w-3.5 h-3.5 shrink-0" />
+            <span className="hidden md:inline">Edit Mode {isEditable ? "ON" : "OFF"}</span>
+            <span className="md:hidden">{isEditable ? "ON" : "OFF"}</span>
           </button>
 
           {/* Divider */}
@@ -106,7 +115,7 @@ export default function AdminBar() {
           {/* Hide button */}
           <button
             onClick={() => setIsVisible(false)}
-            className="h-7 w-7 rounded-full flex items-center justify-center bg-transparent text-white/70 hover:bg-white/15 hover:text-white transition-all"
+            className="h-7 w-7 rounded-full flex items-center justify-center bg-transparent text-white/70 hover:bg-white/15 hover:text-white transition-all shrink-0"
             title="Hide Admin Bar"
           >
             <EyeOff className="w-3.5 h-3.5" />

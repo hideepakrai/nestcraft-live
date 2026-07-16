@@ -189,7 +189,7 @@ export default function LoginPageClient() {
             </button>
           </form>
 
-          <div className="mt-10 text-center">
+          {/* <div className="mt-10 text-center">
             <p className="text-sm text-muted-foreground font-medium">
               New to Nestcraft?{" "}
               <Link
@@ -199,7 +199,7 @@ export default function LoginPageClient() {
                 Create an account
               </Link>
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
 

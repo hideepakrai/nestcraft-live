@@ -42,6 +42,7 @@ import { wsCategories } from "./cms/menus/constMenus";
 import { toast } from "sonner";
 import { profile } from "console";
 import { logoutThunk } from "@/lib/store/auth/authThunks";
+import { fetchProducts } from "@/lib/store/products/productsThunk";
 import { Button } from "./ui/button";
 import AdminBar from "./AdminBar";
 import {
@@ -98,6 +99,8 @@ const Header = ({
   logoUrl,
   companyName,
   setIsCartSidebarOpen,
+  isScrolled,
+  isScrollingDown,
 }: {
   theme: string;
   toggleTheme: () => void;
@@ -105,12 +108,13 @@ const Header = ({
   logoUrl?: string;
   companyName?: string;
   setIsCartSidebarOpen: (val: boolean) => void;
+  isScrolled: boolean;
+  isScrollingDown: boolean;
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeMegaTab, setActiveMegaTab] = useState<string | null>(null);
   const cartCount = useAppSelector(selectCartCount);
   const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
 
   const dispatch = useDispatch<AppDispatch>();
@@ -150,18 +154,6 @@ const Header = ({
     setActiveMegaTab(null);
   }, [pathname]);
 
-  // Handle Scroll for Sticky logic
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 120) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const isHome = pathname === "/" || pathname === "/en" || pathname === "/hi";
   const isTransparent =
@@ -193,7 +185,7 @@ const Header = ({
           : isTransparent
             ? "absolute top-0 left-0"
             : "relative"
-      }`}
+      } ${isScrolled && isScrollingDown ? "max-sm:-translate-y-full" : "max-sm:translate-y-0"}`}
     >
       {/* ✅ AdminBar — topmost strip above navigation */}
       <AdminBar />
@@ -424,7 +416,7 @@ const Header = ({
               >
                 <User size={20} strokeWidth={1.5} />
                 <span className="text-[15px] font-normal hidden lg:block">
-                  Login / Signup
+                  Login 
                 </span>
               </Link>
             )}
@@ -672,12 +664,19 @@ const SearchOverlay = ({
   const [query, setQuery] = useState("");
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     if (isOpen && inputRef.current) inputRef.current.focus();
   }, [isOpen]);
 
-  const { allProducts } = useAppSelector((state) => state.adminProducts);
+  const { allProducts, hasFetched } = useAppSelector((state) => state.adminProducts);
+
+  useEffect(() => {
+    if (isOpen && !hasFetched) {
+      dispatch(fetchProducts());
+    }
+  }, [isOpen, hasFetched, dispatch]);
 
   const filteredProducts =
     query.length > 1
@@ -954,6 +953,38 @@ export default function SiteChrome({
   const [theme, setTheme] = useState("light");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const pathname = usePathname();
+  
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrollingDown, setIsScrollingDown] = useState(false);
+  const lastScrollY = useRef(0);
+
+  // Handle Scroll for Sticky logic
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > 120) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+
+      // Determine scroll direction for smart mobile header
+      if (currentScrollY > 60) {
+        if (currentScrollY > lastScrollY.current + 10) {
+          setIsScrollingDown(true);
+        } else if (currentScrollY < lastScrollY.current - 10) {
+          setIsScrollingDown(false);
+        }
+      } else {
+        setIsScrollingDown(false);
+      }
+      
+      lastScrollY.current = currentScrollY;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -1004,6 +1035,8 @@ export default function SiteChrome({
         logoUrl={primaryLogo}
         companyName={companyName}
         setIsCartSidebarOpen={setIsCartSidebarOpen}
+        isScrolled={isScrolled}
+        isScrollingDown={isScrollingDown}
       />
       <SearchOverlay
         isOpen={isSearchOpen}
@@ -1017,7 +1050,11 @@ export default function SiteChrome({
       />
 
       {/* Mobile Bottom Navigation Bar */}
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 h-16 bg-background border-t border-border z-[1300] flex justify-around items-center px-2">
+      <div 
+        className={`sm:hidden fixed bottom-0 left-0 right-0 h-16 bg-background border-t border-border z-[1300] flex justify-around items-center px-2 transition-transform duration-300 ${
+          isScrolled && !isScrollingDown ? "translate-y-full" : "translate-y-0"
+        }`}
+      >
         <Link href="/" className="flex flex-col items-center justify-center gap-1 w-16 text-muted hover:text-foreground">
           <Home size={20} strokeWidth={1.5} />
           <span className="text-[10px] font-bold">Home</span>
